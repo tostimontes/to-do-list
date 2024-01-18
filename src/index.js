@@ -7,6 +7,7 @@ import {
   isBefore,
   parseISO,
 } from "date-fns";
+import { renderInitialUI } from "./initialUI.js";
 
 const todoItem = {
   title: "title",
@@ -17,16 +18,7 @@ const todoItem = {
   category: "",
 };
 
-// setTodoItem only creates, separate editing function, which should findIndex
-
 // ITEM
-function setTodoItem(
-  object
-) {
-    const newTitle = object.title;
-    const todoItem = object;
-    localStorage.setItem(`${newTitle}`, JSON.stringify(todoItem));
-}
 
 const exampleItem = {
   title: "regar plantas",
@@ -39,84 +31,47 @@ const exampleItem = {
 const exampleItem2 = {
   title: "matar plantas",
   description: "una a una con cariño 50ml",
-  dueDate: "14-57-09-11-28",
+  dueDate: "14-57-09-00-08",
   priority: "high",
   project: "Jardín",
   category: "Personal"
 };
-
-setTodoItem(exampleItem);
-console.log(localStorage);
-// const newDueDate = JSON.parse(localStorage.getItem("regar plantas")).dueDate;
-// console.log(newDueDate.split("-").map(Number));
-// const [hours, minutes, day, month, year] = newDueDate.split("-").map(Number);
-//  const date = new Date(year + 2000, month - 1, day, hours, minutes);
-//  console.log(typeof(date));
-//  console.log(format(date, "MMM-dd-yy"));
-// function convertToStandardAppTime(dateString) {
-//     const [hours, minutes, day, month, year] = dateStr.split("-").map(Number);
-// }
-// "MMM-dd-yyyy-HH-mm";
-
-function editTodoItem(
-  todoItem,
-  {
-    title,
-    description,
-    dueDate, // HH-mm-dd-MM-yy format
-    priority,
-    project,
-    category,
-  }
+const exampleItem2Modified = {
+  title: "matar plantas",
+  description: "de dos en dos sin cariño",
+  dueDate: "14-00-09-00-08",
+  priority: "medium",
+  project: "Asssasin",
+  category: "Personal"
+};
+function setTodoItem(
+  object
 ) {
-  const itemToEdit = todoItem.project.findIndex(
-    (item) =>
-      item.title === todoItem.title &&
-      item.project === todoItem.project &&
-      item.category === todoItem.category
-  );
-  getFromStorage(storage[itemToEdit]);
-  for (const key in itemToEdit) {
-    for (const argument in object) {
-      itemToEdit[key] = object[argument];
-    }
-  }
+    localStorage.setItem(
+      `${object.project}: ${object.title}`,
+      JSON.stringify(object)
+    );
+}
+function editTodoItem(oldObject, newObject) {
+  deleteTodoItem(oldObject);
+  setTodoItem(newObject);
 }
 
-function deleteTodoItem(todoItem) {
-  const itemToDelete = todoItem.project.findIndex(
-    (item) =>
-      item.title === todoItem.title &&
-      item.project === todoItem.project &&
-      item.category === todoItem.category
-  );
-  deleteFromStorage(storage[itemToEdit]);
+function deleteTodoItem(object) {
+  console.log();
+  localStorage.removeItem(`${object.project}: ${object.title}`)
 }
 
 // PROJECT
 
-function setProject(params) {
-  // create OR update item (object)
-  // save to storage
-}
-
-// STORAGE
-
-function saveToStorage(title, object) {
-  localStorage.setItem("", "");
-}
-
-function getFromStorage() {}
-
-function removeFromStorage() {}
+// function setProject(params) {
+//   // create OR update item (object)
+//   // save to storage
+// }
 
 // GLOBAL FUNCTIONS
 function getCurrentTime() {
   return new Date();
 }
 
-// console.log(getCurrentTime());
-
-// const now = new Date();
-
-// console.log(now);
+renderInitialUI();

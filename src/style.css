@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  & ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+:root {
+  font-size: 62.5%;
+  /* COLORs */
+  --intense-coral: coral;
+  --medium-coral: rgb(252, 148, 103);
+  --dim-coral: rgb(252, 178, 152);
+  --font-darkgrey: rgb(59, 59, 59);
+  --font-lightgrey: rgb(153, 153, 153);
+  --font-brown: rgb(100, 71, 58);
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../media/fonts/Roboto/RobotoFlex-VariableFont_GRAD\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../media/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Nunito Sans';
+    src: url('../media/fonts/Nunito_Sans/NunitoSans-VariableFont_YTLC\,opsz\,wdth\,wght.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+}
+
+.svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+html {
+  width: 100%;
+  height: 100vh;
+}
+
+body {
+  font-size: 1.6rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+#sidebar {
+  width: 25%;
+  height: 100vh;
+  position: sticky;
+  background-color: var(--intense-coral);
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#filters_panel {
+  width: 100%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.category_div {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.default_category {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 500;
+    color: var(--font-darkgrey);
+}
+
+#mainDiv {
+  width: 75%;
+  height: 100vh;
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+}
+
+#header {
+  width: 100%;
+  height: 4rem;
+  background-color: var(--medium-coral);
+}
+
+#main_display {
+  width: 100%;
+  height: calc(100vh - 8rem);
+  padding: 2rem;
+  background-color: var(--dim-coral);
+  overflow-y: auto;
+}
+
+#footer {
+  width: 100%;
+  height: 4rem;
+  background-color: var(--medium-coral);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  & .button {
+    background-color: var(--intense-coral);
+    box-shadow: 1px 1px 2px var(--font-lightgrey);
+    padding: 0.5rem 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--medium-coral);
+      box-shadow: 1px 1px 2px var(--font-darkgrey);
+      transform: scale(1.1);
+      transition: 0.2s;
+    }
+  }
+}
