@@ -13,6 +13,7 @@
   --intense-coral: coral;
   --medium-coral: rgb(252, 148, 103);
   --dim-coral: rgb(252, 178, 152);
+  --white-coral: rgb(255, 213, 198);
   --font-darkgrey: rgb(59, 59, 59);
   --font-lightgrey: rgb(153, 153, 153);
   --font-brown: rgb(100, 71, 58);
@@ -57,7 +58,7 @@ body {
 }
 
 #sidebar {
-  width: 25%;
+  width: 20%;
   height: 100vh;
   position: sticky;
   background-color: var(--intense-coral);
@@ -87,8 +88,23 @@ body {
     color: var(--font-darkgrey);
 }
 
+#categories_panel {
+  width: 100%;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.custom_category_titles {
+  font-weight: bold;
+  /* TODO: solve montserrat variability */
+}
+
 #mainDiv {
-  width: 75%;
+  width: 80%;
   height: 100vh;
   position: sticky;
   display: flex;
@@ -104,9 +120,19 @@ body {
 #main_display {
   width: 100%;
   height: calc(100vh - 8rem);
-  padding: 2rem;
-  background-color: var(--dim-coral);
+  display: flex;
+}
+
+#project_display {
+  width: 60%;
+  height: 100%;
   overflow-y: auto;
+  background-color: var(--white-coral);
+}
+
+#detail_display {
+  width: 40%;
+  background-color: var(--dim-coral);
 }
 
 #footer {
