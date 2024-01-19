@@ -21,8 +21,10 @@ function updateCategories() {
 
   const generalCategory = createDOMElement(
     "h3",
-    { class: "sidebar custom_category_titles custom_categories",
-    id: "general_category" },
+    {
+      class: "sidebar custom_category_titles custom_categories",
+      id: "general_category",
+    },
     "GENERAL"
   );
   categoriesPanel.append(generalCategory);
@@ -41,12 +43,9 @@ function updateCategories() {
         `${item.project}`
       );
       sidebarProjectTitle.dataset.project = `${item.category.toLowerCase()}:${item.project.toLowerCase()}`;
-      sidebarProjectTitle.addEventListener(
-        "click",
-        updateProjectItemsDisplay(item.project)
-      );
-
-      // TODO: SET GENERAL CATEGORY AS DEFAULT, SO THAT ALL GENERAL CATEGORY TODO ITEMS DONT CREATE A PROJECT AND GO AS CHILDREN OG GENERAL CATEGORY/PROJECT
+      sidebarProjectTitle.addEventListener("click", (e) => {
+        updateProjectItemsDisplay(e.target);
+      });
 
       if (
         !categoriesPanel.querySelector(
@@ -73,53 +72,78 @@ function updateCategories() {
 }
 
 function updateProjectItemsDisplay(project) {
+  const projectDisplay = document.querySelector("#project_display");
+  projectDisplay.innerHTML = "";
   const projectItems = todoItemsList.filter(
     (item) =>
       `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
-      `${project.id}`
+      `${project.dataset.project}`
   );
 
   for (const item of projectItems) {
     const itemDiv = createDOMElement("div", {
-      class: `item_div ${item.project}`,
-      id: `${item.title}`,
+      class: "item_div"
     });
+    itemDiv.dataset.project = `${item.category.toLowerCase()}:${item.project.toLowerCase()}`
     const itemCheckbox = createDOMElement("img", {
-      class: `button checkbox ${item.project}`,
-      id: `${item.title}_checkbox`,
+      class: `button todo_checkbox_icon`,
       src: `${allImages["SVGs"]["checkbox.svg"]}`,
     });
-    itemCheckbox.addEventListener("click", completeTodoItem(item));
+    itemCheckbox.addEventListener("click", (e) => {
+      completeTodoItem(e.target);
+    });
+    itemDiv.append(itemCheckbox);
 
     if (item.priority.toLowerCase() === "important") {
-      const importantIcon = createDOMElement("img", {
-        class: "urgent",
-        src: `${allImages["SVGs"]["urgent.svg"]}`,
-      });
-      itemDiv.append(importantIcon);
+      // Create the SVG element
+      const svgNS = "http://www.w3.org/2000/svg";
+      let importantSVG = document.createElementNS(svgNS, "svg");
+      importantSVG.setAttribute("viewBox", "0 0 24 24");
+
+      // Create and append the title element
+      let title = document.createElementNS(svgNS, "title");
+      title.textContent = "alert";
+      importantSVG.appendChild(title);
+
+      // Create and append the path element
+      let path = document.createElementNS(svgNS, "path");
+      path.setAttribute(
+        "d",
+        "M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"
+      );
+      importantSVG.appendChild(path);
+      importantSVG.classList.add("urgent_icon")
+      itemDiv.append(importantSVG);
     }
     if (item.dueDate !== "") {
       const dueDateDisplay = createDOMElement(
         "p",
-        { class: "due_date", id: `${item.title}_due_date` },
+        { class: "due_dates" },
         convertStringToDateAndTime(item.dueDate)
       );
+      dueDateDisplay.dataset.dueDate = `${item.title}_due_date`;
       itemDiv.append(dueDateDisplay);
     }
     const itemTitle = createDOMElement(
       "p",
-      { class: "item_title", id: `${item.title.toLowerCase()}` },
+      { class: "item_titles" },
       `${item.title}`
     );
-    itemTitle.addEventListener("click", displayDetails(item));
+    itemTitle.dataset.title = `${item.title.toLowerCase()}`; 
+    itemTitle.addEventListener("click", (e) => {
+      displayDetails(e.target);
+    });
 
     itemDiv.append(itemTitle);
+
+    projectDisplay.appendChild(itemDiv);
 
     item.status === "completed" ? completeTodoItem(item) : null;
   }
 }
 
 function displayDetails(item) {
+  
   // create elements && append to editPanel
   // store pre-edit values
   // in case no edit, abort edit function

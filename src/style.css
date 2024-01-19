@@ -16,28 +16,33 @@
   --white-coral: rgb(255, 213, 198);
   --font-darkgrey: rgb(59, 59, 59);
   --font-lightgrey: rgb(153, 153, 153);
+  --white-grey: rgb(245, 245, 245);
   --font-brown: rgb(100, 71, 58);
+  --alert-yellow: rgb(255, 214, 0);
 }
 
 @font-face {
-    font-family: 'Roboto';
-    src: url('../media/fonts/Roboto/RobotoFlex-VariableFont_GRAD\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf') format('truetype');
-    font-style: normal;
-    font-weight: normal;
+  font-family: "Roboto";
+  src: url("../media/fonts/Roboto/RobotoFlex-VariableFont_GRAD\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf")
+    format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
 
 @font-face {
-    font-family: 'Montserrat';
-    src: url('../media/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
-    font-style: normal;
-    font-weight: normal;
+  font-family: "Montserrat";
+  src: url("../media/fonts/Montserrat/Montserrat-VariableFont_wght.ttf")
+    format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
 
 @font-face {
-    font-family: 'Nunito Sans';
-    src: url('../media/fonts/Nunito_Sans/NunitoSans-VariableFont_YTLC\,opsz\,wdth\,wght.ttf') format('truetype');
-    font-style: normal;
-    font-weight: normal;
+  font-family: "Nunito Sans";
+  src: url("../media/fonts/Nunito_Sans/NunitoSans-VariableFont_YTLC\,opsz\,wdth\,wght.ttf")
+    format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
 
 .svg {
@@ -77,15 +82,15 @@ body {
 }
 
 .category_div {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }
 
 .default_category {
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 500;
-    color: var(--font-darkgrey);
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 500;
+  color: var(--font-darkgrey);
 }
 
 #categories_panel {
@@ -95,12 +100,16 @@ body {
   flex-direction: column;
   gap: 1rem;
   overflow-y: auto;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .custom_category_titles {
   font-weight: bold;
   /* TODO: solve montserrat variability */
+}
+
+.project_titles {
+  cursor: pointer;
 }
 
 #mainDiv {
@@ -128,6 +137,47 @@ body {
   height: 100%;
   overflow-y: auto;
   background-color: var(--white-coral);
+  padding: 2rem;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item_div {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.todo_checkbox_icon,
+.urgent_icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.urgent_icon {
+  background-color: black;
+  border-radius: 3px;
+  > path {
+    fill: var(--alert-yellow);
+  }
+}
+
+.due_dates {
+  font-style: italic;
+  background-color: var(--white-grey);
+  font-size: 1.5rem;
+  padding: 0.5rem 0.8rem 0.5rem 0.5rem;
+  border-radius: 5px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+
+}
+
+.item_titles {
+  cursor: pointer;
 }
 
 #detail_display {
@@ -143,14 +193,13 @@ body {
   align-items: center;
   gap: 2rem;
   padding: 0 1rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 600;
   & .button {
     background-color: var(--intense-coral);
     box-shadow: 1px 1px 2px var(--font-lightgrey);
     padding: 0.5rem 1.1rem;
     border-radius: 5px;
-    cursor: pointer;
     &:hover {
       background-color: var(--medium-coral);
       box-shadow: 1px 1px 2px var(--font-darkgrey);
@@ -158,4 +207,8 @@ body {
       transition: 0.2s;
     }
   }
+}
+
+.button {
+  cursor: pointer;
 }
