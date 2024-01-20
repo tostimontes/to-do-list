@@ -1,7 +1,7 @@
 import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
 import { todoItemsList } from "./defaultSetup.js";
 import allImages from "./image_bundler.js";
-import convertStringToDateAndTime from "./dateConverter.js";
+import {convertStringToDateAndTime} from "./dateConverter.js";
 
 const sidebar = document.querySelector("#sidebar");
 const header = document.querySelector("#header");
@@ -74,6 +74,9 @@ function updateCategories() {
 function updateProjectItemsDisplay(project) {
   const projectDisplay = document.querySelector("#project_display");
   projectDisplay.innerHTML = "";
+  const detailedDisplay = document.querySelector("#detail_display");
+  detailedDisplay.innerHTML = "";
+
   const projectItems = todoItemsList.filter(
     (item) =>
       `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
@@ -82,9 +85,9 @@ function updateProjectItemsDisplay(project) {
 
   for (const item of projectItems) {
     const itemDiv = createDOMElement("div", {
-      class: "item_div"
+      class: "item_div",
     });
-    itemDiv.dataset.project = `${item.category.toLowerCase()}:${item.project.toLowerCase()}`
+    itemDiv.dataset.project = `${item.category.toLowerCase()}:${item.project.toLowerCase()}`;
     const itemCheckbox = createDOMElement("img", {
       class: `button todo_checkbox_icon`,
       src: `${allImages["SVGs"]["checkbox.svg"]}`,
@@ -102,7 +105,7 @@ function updateProjectItemsDisplay(project) {
 
       // Create and append the title element
       let title = document.createElementNS(svgNS, "title");
-      title.textContent = "alert";
+      title.textContent = "Important";
       importantSVG.appendChild(title);
 
       // Create and append the path element
@@ -112,7 +115,7 @@ function updateProjectItemsDisplay(project) {
         "M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"
       );
       importantSVG.appendChild(path);
-      importantSVG.classList.add("urgent_icon")
+      importantSVG.classList.add("urgent_icon");
       itemDiv.append(importantSVG);
     }
     if (item.dueDate !== "") {
@@ -129,7 +132,7 @@ function updateProjectItemsDisplay(project) {
       { class: "item_titles" },
       `${item.title}`
     );
-    itemTitle.dataset.title = `${item.title.toLowerCase()}`; 
+    itemTitle.dataset.title = `${item.title.toLowerCase()}`;
     itemTitle.addEventListener("click", (e) => {
       displayDetails(e.target);
     });
@@ -143,10 +146,53 @@ function updateProjectItemsDisplay(project) {
 }
 
 function displayDetails(item) {
-  
+  const detailedDisplay = document.querySelector("#detail_display");
+  detailedDisplay.innerHTML = "";
+  // Find item
+  const itemForDisplay = todoItemsList.find(
+    (todoObject) =>
+      todoObject.title.toLowerCase() === item.dataset.title &&
+      `${todoObject.category.toLowerCase()}:${todoObject.project.toLowerCase()}` ===
+        item.parentElement.dataset.project
+  );
   // create elements && append to editPanel
-  // store pre-edit values
-  // in case no edit, abort edit function
+  const detailItemTitle = createDOMElement(
+    "h2",
+    { class: "detail detail_title" },
+    `${itemForDisplay.title}`
+  );
+  const subtitleBox = createDOMElement("div", {
+    class: "detail detail_subtitle_box",
+  });
+  // TODO: create and Put important icon next to title if important
+  const detailItemDescription = createDOMElement(
+    "p",
+    { class: "detail detail_item_description" },
+    `${itemForDisplay.description}`
+  );
+  let detailItemDueDate;
+  if (itemForDisplay.dueDate !== "") {
+    detailItemDueDate = createDOMElement(
+      "p",
+      { class: "detail detail_due_date" },
+      convertStringToDateAndTime(itemForDisplay.dueDate)
+    );
+  }
+  const detailPriority = createDOMElement(
+    "p",
+    { class: "detail detail_priority" },
+    `${itemForDisplay.priority}`
+  );
+  if (detailItemDueDate !== undefined) {
+    subtitleBox.append(detailPriority, detailItemDueDate);
+  } else {
+    subtitleBox.append(detailPriority);
+  }
+
+  detailedDisplay.append(detailItemTitle, subtitleBox, detailItemDescription);
+
+  // TODO: store pre-edit values
+  // TODO: in case no edit, abort edit function
 }
 
 function completeTodoItem(item) {
@@ -162,4 +208,4 @@ function completeTodoItem(item) {
 // create categories
 // create projects
 
-export { updateCategories, updateProjectItemsDisplay };
+export { updateCategories, updateProjectItemsDisplay, displayDetails };

@@ -160,6 +160,26 @@ function createDialogs(button) {
     type: "datetime-local",
     placeholder: "Select a due date (optional)",
   });
+
+  // Function to format the date in YYYY-MM-DDTHH:MM format
+  function formatDateTimeLocal(date) {
+    const formatted = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .slice(0, 16);
+    return formatted;
+  }
+
+  // Set the minimum date and time for the datetime-local input
+  function setMinDateTime() {
+    const now = new Date();
+    dueDateInput.min = formatDateTimeLocal(now);
+  }
+
+  // Call the function to set the min datetime
+  setMinDateTime();
+
   const priorityButtonsDiv = createDOMElement("div", {
     class: "new_item",
     id: "priority_buttons_div",
@@ -256,11 +276,26 @@ function createDialogs(button) {
   categoryDiv.append(categoryDropdown, categoryAlert);
 
   categoryDropdown.addEventListener("change", (e) => {
-    renderProjects(e.target.value, projectDiv);
+    if (e.target.value.toLowerCase() === "add new category") {
+      let newCategory = prompt("Enter new category:");
+      const newCategoryOption = createDOMElement(
+        "option",
+        { class: "category_options", value: `${newCategory}`, selected: "" },
+        `${newCategory}`
+      );
+      categoryDropdown.insertBefore(
+        newCategoryOption,
+        categoryDropdown.querySelector(`option[value="add new category"`)
+      );
+      renderProjects(newCategoryOption, projectDiv);
+      createNewProject();
+    } else {
+      renderProjects(e.target.value, projectDiv);
+    }
   });
   const saveButton = createDOMElement(
     "button",
-    { class: "", id: "save_button" },
+    { class: "", id: "save_button", type: "button" },
     "SAVE"
   );
 
@@ -305,8 +340,8 @@ function createDialogs(button) {
     validateForm(e.target.parentElement);
     if (validateForm(e.target.parentElement)) {
       createTodoObject(e.target.parentElement);
+      closeModal();
     }
-    console.log(localStorage);
   });
 
   body.append(newItemDialog);
@@ -366,9 +401,6 @@ function renderCategories(dialog) {
     { class: "category_options", value: "add new category" },
     "Add New Category"
   );
-  newCategoryOption.addEventListener("click", (e) => {
-    document.querySelector("#new_category_dialog").showModal();
-  });
   dialog.querySelector("#category_dropdown").append(newCategoryOption);
 }
 function renderProjects(category, projectDiv) {
@@ -409,5 +441,28 @@ function renderProjects(category, projectDiv) {
   });
   dialog.querySelector(".project_select").append(newProjectOption);
 }
+
+function createNewProject() {
+  let newProject = prompt("Enter new project name:");
+  const newProjectOption = createDOMElement("option", {class: "project_options", value: `${newProject}`}, `${newProject}`);
+  document
+    .querySelector("#project_dropdown")
+    .insertBefore(
+      newProjectOption,
+      document.querySelector("#project_dropdown").querySelector(`option[value="add new project"]`)
+    );
+}
+
+function closeModal() {
+  document.querySelector("dialog").remove();
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (document.querySelector("dialog")) {
+      closeModal();
+    }
+  }
+});
 
 export { renderInitialUI, createDialogs, renderCategories, renderProjects };
