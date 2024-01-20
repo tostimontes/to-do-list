@@ -1,65 +1,413 @@
 import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
 import "./style.css";
-import { updateUI } from "./updateUI.js";
+import { updateCategories, updateProjectItemsDisplay } from "./updateUI.js";
 import allImages from "./image_bundler.js";
-
-// sidebar: sorts, filters, navigation by projects
-// MAIN: Top -> main view === project view (either by projects, or individual todos dialog, which updates automatically by change)
-// MAIN: Bottom -> add project, add todo
-// MAIN: ABOVE -> breadcrumbs with path
-
+import {
+  setTodoItem,
+  todoItemsList,
+  createTodoObject,
+} from "./defaultSetup.js";
 
 function renderInitialUI() {
-    const body = document.querySelector("body");
-    const sidebar = createDOMElement("div", { id: "sidebar"});
-    const mainDiv = createDOMElement("div", { id: "mainDiv"});
-    const breadcrumbsHeader = createDOMElement("div", {class: "main", id: "header"});
-    const mainDisplay = createDOMElement("div", {class: "main", id: "main_display"});
-    const footer = createDOMElement("div", {class: "main", id: "footer"});
-    const addItem = createDOMElement("div", {class: "footer button", id: "add_item"}, "+ New Item");
-    const addProject = createDOMElement("div", {class: "footer button", id: "add_project"}, "+ New Project");
-    const addCategory = createDOMElement("div", {class: "footer button", id: "add_category"}, "+ New Category");
+  const body = document.querySelector("body");
+  const sidebar = createDOMElement("div", { id: "sidebar" });
+  const mainDiv = createDOMElement("div", { id: "mainDiv" });
+  const breadcrumbsHeader = createDOMElement("div", {
+    class: "main",
+    id: "header",
+  });
+  const mainDisplay = createDOMElement("div", {
+    class: "main",
+    id: "main_display",
+  });
+  const footer = createDOMElement("div", { class: "main", id: "footer" });
+  const addItem = createDOMElement(
+    "div",
+    { class: "footer button footer_buttons", id: "add_item" },
+    "+ New Item"
+  );
+  const filtersPanel = createDOMElement("div", {
+    class: "sidebar",
+    id: "filters_panel",
+  });
+  const agendaDiv = createDOMElement("div", {
+    class: "sidebar category_div default_category",
+    id: "agenda_div",
+  });
+  const agendaIcon = createDOMElement("img", {
+    class: "svg sidebar",
+    id: "agenda_icon",
+    src: `${allImages["SVGs"]["calendar.svg"]}`,
+  });
+  const agendaP = createDOMElement(
+    "p",
+    { class: "sidebar default_category", id: "agenda_p" },
+    "Agenda"
+  );
+  agendaDiv.append(agendaIcon, agendaP);
+  const allDiv = createDOMElement("div", {
+    class: "sidebar category_div default_category",
+    id: "all_div",
+  });
+  const allP = createDOMElement(
+    "p",
+    { class: "sidebar default_category", id: "all_p" },
+    "All"
+  );
+  const allIcon = createDOMElement("img", {
+    class: "svg sidebar",
+    id: "all_icon",
+    src: `${allImages["SVGs"]["list.svg"]}`,
+  });
+  allDiv.append(allIcon, allP);
+  const importantDiv = createDOMElement("div", {
+    class: "sidebar category_div default_category",
+    id: "important_div",
+  });
+  const importantP = createDOMElement(
+    "p",
+    { class: "sidebar default_category", id: "important_p" },
+    "Important"
+  );
+  const importantIcon = createDOMElement("img", {
+    class: "svg sidebar",
+    id: "important_icon",
+    src: `${allImages["SVGs"]["urgent.svg"]}`,
+  });
+  importantDiv.append(importantIcon, importantP);
+  const completedDiv = createDOMElement("div", {
+    class: "sidebar category_div default_category",
+    id: "completed_div",
+  });
+  const completedP = createDOMElement(
+    "p",
+    { class: "sidebar default_cate19gory", id: "completed_p" },
+    "Completed"
+  );
+  const completedIcon = createDOMElement("img", {
+    class: "svg sidebar",
+    id: "completed_icon",
+    src: `${allImages["SVGs"]["check.svg"]}`,
+  });
+  completedDiv.append(completedIcon, completedP);
 
-    // create main panel with sorts filters and main categories
-    // main categories/sorts/filters: agenda, high priority, completed, all 
-    const filtersPanel = createDOMElement("div", {class: "sidebar", id: "filters_panel"});
-    const agendaDiv = createDOMElement("div", {class: "sidebar category_div default_category", id: "agenda_div"});
-    const agendaIcon = createDOMElement("img", {class: "svg sidebar", id: "agenda_icon", src: `${allImages["SVGs"]["calendar.svg"]}`});
-    const agendaP = createDOMElement("p", {class: "sidebar default_category", id: "agenda_p"}, "Agenda");
-    agendaDiv.append(agendaIcon, agendaP);
-    const allDiv = createDOMElement("div", {class: "sidebar category_div default_category", id: "all_div"});
-    const allP = createDOMElement("p", {class: "sidebar default_category", id: "all_p"}, "All");
-    const allIcon = createDOMElement("img", {
-        class: "svg sidebar",
-        id: "all_icon",
-        src: `${allImages["SVGs"]["list.svg"]}`,
-    });
-    allDiv.append(allIcon, allP);
-    const urgentDiv = createDOMElement("div", {class: "sidebar category_div default_category", id: "urgent_div"});
-    const urgentP = createDOMElement("p", {class: "sidebar default_category", id: "urgent_p"}, "Urgent");
-    const urgentIcon = createDOMElement("img", {
-        class: "svg sidebar",
-        id: "urgent_icon",
-        src: `${allImages["SVGs"]["urgent.svg"]}`,
-    });
-    urgentDiv.append(urgentIcon, urgentP);
-    const completedDiv = createDOMElement("div", {class: "sidebar category_div default_category", id: "completed_div"});
-    const completedP = createDOMElement("p", {class: "sidebar default_category", id: "completed_p"}, "Completed");
-    const completedIcon = createDOMElement("img", {
-        class: "svg sidebar",
-        id: "completed_icon",
-        src: `${allImages["SVGs"]["check.svg"]}`,
-    });
-    completedDiv.append(completedIcon, completedP);
+  const categoriesPanel = createDOMElement("div", {
+    class: "sidebar",
+    id: "categories_panel",
+  });
 
-    filtersPanel.append(allDiv, completedDiv, urgentDiv, agendaDiv);
-    // create categores panel as ul, each cat should be foldable
+  const projectDisplay = createDOMElement("div", {
+    class: "main",
+    id: "project_display",
+  });
+  const detailDisplay = createDOMElement("div", {
+    class: "main",
+    id: "detail_display",
+  });
 
-    // updateUI();
-    sidebar.append(filtersPanel);
-    footer.append(addItem, addProject, addCategory)
-    mainDiv.append(breadcrumbsHeader, mainDisplay, footer);
-    body.append(sidebar, mainDiv);
+  filtersPanel.append(allDiv, completedDiv, importantDiv, agendaDiv);
+  // create categores panel as ul, each cat should be foldable
+  mainDisplay.append(projectDisplay, detailDisplay);
+  sidebar.append(filtersPanel, categoriesPanel);
+  footer.append(addItem);
+  footer.querySelectorAll(".footer_buttons").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      createDialogs(e.target);
+    });
+  });
+  mainDiv.append(breadcrumbsHeader, mainDisplay, footer);
+  body.append(sidebar, mainDiv);
+
+  // updateCategories();
 }
 
-export { renderInitialUI };
+function createDialogs(button) {
+  const body = document.querySelector("body");
+  const newItemDialog = createDOMElement("dialog", {
+    class: "creation_dialogs",
+    id: "new_item_dialog",
+  });
+  const newItemForm = createDOMElement("form", {
+    class: "new_item",
+    id: "new_item_form",
+  });
+  const titleInput = createDOMElement("input", {
+    class: "new_item",
+    id: "new_item_title_input",
+    type: "text",
+    required: "",
+    placeholder: "Enter to-do item's title",
+  });
+  const titleAlert = createDOMElement(
+    "p",
+    { class: "alert_messages", id: "title_alert" },
+    "* Please enter a title"
+  );
+  const titleDiv = createDOMElement("div", {
+    class: "new_item",
+    id: "form_title_div",
+  });
+  titleDiv.append(titleInput, titleAlert);
+  const descriptionInput = createDOMElement("input", {
+    class: "new_item",
+    id: "new_item_description_input",
+    type: "text",
+    placeholder: "Enter to-do item's description (optional)",
+  });
+  const dueDateInput = createDOMElement("input", {
+    class: "new_item",
+    id: "new_item_due_date_input",
+    type: "datetime-local",
+    placeholder: "Select a due date (optional)",
+  });
+  const priorityButtonsDiv = createDOMElement("div", {
+    class: "new_item",
+    id: "priority_buttons_div",
+  });
+  const priorityAlert = createDOMElement(
+    "p",
+    { class: "alert_messages", id: "priority_alert" },
+    "* Please choose a priority level"
+  );
+  const priorityDiv = createDOMElement("div", {
+    class: "new_item",
+    id: "form_priority_div",
+  });
+  priorityDiv.append(priorityButtonsDiv, priorityAlert);
+
+  const importantButton = createDOMElement(
+    "button",
+    {
+      class: "button new_item priority_buttons",
+      id: "important_button",
+      type: "button",
+    },
+    "Important"
+  );
+  const normalButton = createDOMElement(
+    "button",
+    {
+      class: "button new_item priority_buttons",
+      id: "normal_button",
+      type: "button",
+    },
+    "Normal"
+  );
+  const optionalButton = createDOMElement(
+    "button",
+    {
+      class: "button new_item priority_buttons",
+      id: "optional_button",
+      type: "button",
+    },
+    "Optional"
+  );
+  const projectDropdown = createDOMElement("select", {
+    class: "new_item project_select",
+    id: "project_dropdown",
+  });
+  const projectAlert = createDOMElement(
+    "p",
+    { class: "alert_messages", id: "project_alert" },
+    "* Please either choose or create a project"
+  );
+  const projectDiv = createDOMElement("div", {
+    class: "new_item",
+    id: "form_project_div",
+  });
+  projectDiv.append(projectDropdown, projectAlert);
+
+  const defaultProjectText = createDOMElement(
+    "option",
+    {
+      class: "new_item project_options",
+      selected: "",
+      disabled: "",
+      hidden: "",
+    },
+    "Select a project"
+  );
+  projectDropdown.append(defaultProjectText);
+  const categoryDropdown = createDOMElement("select", {
+    class: "new_item category_select",
+    id: "category_dropdown",
+  });
+  const categoryAlert = createDOMElement(
+    "p",
+    { class: "alert_messages", id: "category_alert" },
+    "* Please either choose or create a category"
+  );
+
+  const defaultCategoryText = createDOMElement(
+    "option",
+    {
+      class: "new_item category_options",
+      selected: "",
+      disabled: "",
+      hidden: "",
+    },
+    "Select a category"
+  );
+  categoryDropdown.append(defaultCategoryText);
+  const categoryDiv = createDOMElement("div", {
+    class: "new_item",
+    id: "form_category_div",
+  });
+  categoryDiv.append(categoryDropdown, categoryAlert);
+
+  categoryDropdown.addEventListener("change", (e) => {
+    renderProjects(e.target.value, projectDiv);
+  });
+  const saveButton = createDOMElement(
+    "button",
+    { class: "", id: "save_button" },
+    "SAVE"
+  );
+
+  const newProjectInput = createDOMElement("input", {
+    class: "new_project",
+    id: "new_project_input",
+    type: "text",
+    required: "",
+    placeholder: "Enter new project's title",
+  });
+
+  const newCategoryInput = createDOMElement("input", {
+    class: "new_category",
+    id: "new_cateogry_input",
+    type: "text",
+    required: "",
+    placeholder: "Enter new category name",
+  });
+
+  priorityButtonsDiv.append(importantButton, normalButton, optionalButton);
+  priorityButtonsDiv.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("priority_buttons")) {
+      return;
+    } else {
+      priorityButtonsDiv
+        .querySelectorAll(".priority_buttons")
+        .forEach((button) => {
+          button.classList.remove("selected_priority");
+        });
+      e.target.classList.add("selected_priority");
+    }
+  });
+  newItemForm.append(
+    titleDiv,
+    descriptionInput,
+    dueDateInput,
+    priorityDiv,
+    categoryDiv
+  );
+  newItemDialog.append(newItemForm);
+  saveButton.addEventListener("click", (e) => {
+    validateForm(e.target.parentElement);
+    if (validateForm(e.target.parentElement)) {
+      createTodoObject(e.target.parentElement);
+    }
+    console.log(localStorage);
+  });
+
+  body.append(newItemDialog);
+
+  renderCategories(newItemDialog);
+  newItemForm.append(saveButton);
+  newItemDialog.showModal();
+}
+
+function validateForm(form) {
+  const priorityButtons = form.querySelectorAll(".priority_buttons");
+  let validForm = true;
+  if (form.querySelector("#new_item_title_input").value === "") {
+    form.querySelector("#title_alert").style.display = "block";
+    validForm = false;
+  }
+  if (
+    !Array.from(priorityButtons).some((button) =>
+      button.classList.contains("selected_priority")
+    )
+  ) {
+    form.querySelector("#priority_alert").style.display = "block";
+    validForm = false;
+  }
+  if (form.querySelector("#category_dropdown").value === "Select a category") {
+    form.querySelector("#category_alert").style.display = "block";
+    validForm = false;
+  }
+  if (form.querySelector("#project_dropdown").value === "Select a project") {
+    form.querySelector("#project_alert").style.display = "block";
+    validForm = false;
+  }
+
+  return validForm;
+
+  //   if any fail, prevent default stop exec
+}
+
+function renderCategories(dialog) {
+  for (const item of todoItemsList) {
+    if (
+      !dialog
+        .querySelector("#category_dropdown")
+        .querySelector(`option[value="${item.category}"]`)
+    ) {
+      const categoryOption = createDOMElement(
+        "option",
+        { class: "category_options", value: `${item.category}` },
+        `${item.category}`
+      );
+      dialog.querySelector("#category_dropdown").append(categoryOption);
+    }
+  }
+
+  const newCategoryOption = createDOMElement(
+    "option",
+    { class: "category_options", value: "add new category" },
+    "Add New Category"
+  );
+  newCategoryOption.addEventListener("click", (e) => {
+    document.querySelector("#new_category_dialog").showModal();
+  });
+  dialog.querySelector("#category_dropdown").append(newCategoryOption);
+}
+function renderProjects(category, projectDiv) {
+  const dialog = document.querySelector("#new_item_dialog");
+  if (dialog.querySelector("#category_dropdown").value === "General") {
+    projectDiv.remove();
+    return;
+  }
+  dialog
+    .querySelector("form")
+    .insertBefore(projectDiv, dialog.querySelector("#save_button"));
+  projectDiv.querySelector("#project_dropdown").innerHTML = "";
+  const categoryProjects = todoItemsList.filter(
+    (item) => item.category.toLowerCase() === `${category.toLowerCase()}`
+  );
+  for (const item of categoryProjects) {
+    if (
+      !dialog
+        .querySelector("#project_dropdown")
+        .querySelector(`option[value="${item.project}"]`)
+    ) {
+      const projectOption = createDOMElement(
+        "option",
+        { class: "project_options", value: `${item.project}` },
+        `${item.project}`
+      );
+      dialog.querySelector(".project_select").append(projectOption);
+    }
+  }
+
+  const newProjectOption = createDOMElement(
+    "option",
+    { class: "project_options", value: "add new project" },
+    "Add New Project"
+  );
+  newProjectOption.addEventListener("click", (e) => {
+    document.querySelector("#new_project_dialog").showModal();
+  });
+  dialog.querySelector(".project_select").append(newProjectOption);
+}
+
+export { renderInitialUI, createDialogs, renderCategories, renderProjects };

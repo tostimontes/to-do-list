@@ -2,36 +2,36 @@ import { format, getYear, getDate, getMonth } from "date-fns";
 
 const now = new Date();
 function convertStringToDateAndTime(str) {
-    const [ hours, minutes, day, month, year ] = str.split("-").map(Number);
-    
-    let time;
-    let date;
-    if (hours !== 99 && minutes !== 99) {
-        time = new Date(year, month, day, hours, minutes);
-        time = format(time, "H:mm");
-    }
+  const [hours, minutes, day, month, year] = str.split("-").map(Number);
 
-    date = new Date(year + 2000, month -1, day);
-    date = format(date, "dd MMM yy");
-    format(now, "yy") === date.slice(-2) ? date = date.slice(0, -3): null;
-    format(now, "dd MMM") === date ? date = "Today": null;
-    date.charAt(0) === "0" ? date = date.slice(1): null;
+  let time;
+  let date;
+  if (hours !== 99 && minutes !== 99) {
+    time = new Date(year, month, day, hours, minutes);
+    time = format(time, "H:mm");
+  }
 
-    time !== undefined ? date = `${time}, ${date}`: null;
+  date = new Date(year + 2000, month - 1, day);
+  date = format(date, "dd MMM yy");
+  format(now, "yy") === date.slice(-2) ? (date = date.slice(0, -3)) : null;
+  format(now, "dd MMM") === date ? (date = "Today") : null;
+  date.charAt(0) === "0" ? (date = date.slice(1)) : null;
 
-    return date;
+  time !== undefined ? (date = `${time}, ${date}`) : null;
+
+  return date;
 }
 
+function convertInputValueToDueDateString(input) {
+  const date = new Date(input);
 
-// let string = "99-99-04-12-24"
-// let todayDate = "09-43-19-01-24"
-// let randomDate = "04-00-01-01-24";
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString().substr(-2);
 
-// console.log(convertStringToDateAndTime(string));
-// console.log(convertStringToDateAndTime(todayDate));
-// console.log(convertStringToDateAndTime(randomDate));
-// console.log(format(now, "yy"));
+  return `${hours}-${minutes}-${day}-${month}-${year}`;
+}
 
-// create function to parse string for object from date
-
-export default convertStringToDateAndTime;
+export { convertStringToDateAndTime, convertInputValueToDueDateString };
