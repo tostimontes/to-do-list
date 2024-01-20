@@ -1,5 +1,5 @@
 import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
-import { todoItemsList } from "./defaultSetup.js";
+import { todoItemsList, deleteProject } from "./defaultSetup.js";
 import allImages from "./image_bundler.js";
 import {convertStringToDateAndTime} from "./dateConverter.js";
 
@@ -46,6 +46,20 @@ function updateCategories() {
       sidebarProjectTitle.addEventListener("click", (e) => {
         updateProjectItemsDisplay(e.target);
       });
+      const removalButton = createDOMElement("button", {class: "project_removal_buttons"}, "x");
+      removalButton.addEventListener("click", (e) => {
+        deleteProject(e.target.previousElementSibling);
+      })
+      
+      const sidebarProjectDiv = createDOMElement("div", {class: "sidebar_project_div"});
+      sidebarProjectDiv.append(sidebarProjectTitle, removalButton);
+
+      sidebarProjectDiv.addEventListener("mouseenter", (e) => {
+        e.target.querySelector("button").style.display = "inline-block";
+      })
+      sidebarProjectDiv.addEventListener("mouseleave", (e) => {
+        e.target.querySelector("button").style.display = "none";
+      })
 
       if (
         !categoriesPanel.querySelector(
@@ -66,7 +80,7 @@ function updateCategories() {
       }
       categoriesPanel
         .querySelector(`#${item.category.toLowerCase()}_category`)
-        .appendChild(sidebarProjectTitle);
+        .append(sidebarProjectDiv);
     }
   }
 }

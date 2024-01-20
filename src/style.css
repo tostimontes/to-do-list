@@ -132,7 +132,6 @@ body {
   }
 }
 
-
 #sidebar {
   width: 20%;
   height: 100vh;
@@ -174,9 +173,37 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.custom_categories {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
 .custom_category_titles {
   font-weight: bold;
   /* TODO: solve montserrat variability */
+}
+
+.sidebar_project_div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 2rem;
+}
+
+.project_removal_buttons {
+  cursor: pointer;
+  display: none;
+  background-color: transparent;
+  text-decoration: none;
+  outline: none;
+  height: 100%;
+  width: 2rem;
+  border: 0;
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .project_titles {

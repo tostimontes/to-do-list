@@ -69,6 +69,17 @@ function editTodoItem(oldObject, newObject) {
   setTodoItem(newObject);
 }
 
+function deleteProject(project) {
+  const projectForRemoval = todoItemsList.filter(
+    (item) =>
+      `${item.category.toLowerCase()}:${item.project.toLowerCase()}` === project.dataset.project
+  );
+  for (const item of projectForRemoval) {
+    deleteTodoItem(item);
+  }
+  updateCategories();
+}
+
 // TODO: at the end of displayDetails function, add behavior: old should store
 // TODO: attention to close behavior, before any detailsDisplay.innerHTML == "", ther should be a editTodoItem trigger
 
@@ -84,4 +95,5 @@ export {
   deleteTodoItem,
   todoItemsList,
   createTodoObject,
+  deleteProject
 };
