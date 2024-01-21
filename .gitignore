@@ -1,2 +1,6 @@
 node_modules/
 media/
+
+pendingFeatures.js
+
+src/todoGenerator.js
