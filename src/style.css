@@ -192,7 +192,8 @@ body {
   padding-right: 2rem;
 }
 
-.project_removal_buttons, .item_removal_buttons {
+.project_removal_buttons,
+.item_removal_buttons {
   cursor: pointer;
   display: none;
   background-color: transparent;
@@ -269,7 +270,7 @@ body {
 }
 
 .due_dates,
-.detail_due_date {
+#detail_due_date {
   font-style: italic;
   background-color: var(--white-grey);
   font-size: 1.5rem;
@@ -296,7 +297,17 @@ body {
   font-size: 1.8rem;
 }
 
-.detail_title {
+#edit_button {
+  cursor: pointer;
+  width: 4rem;
+  &:hover {
+    > path {
+      fill: var(--intense-coral);
+    }
+  }
+}
+
+#detail_title {
   font-size: 3rem;
   font-family: "Montserrat", sans-serif;
   text-align: center;
@@ -308,10 +319,10 @@ body {
   gap: 1rem;
 }
 
-.detail_due_date {
+#detail_due_date {
 }
 
-.detail_item_description {
+#detail_item_description {
   font-size: 1.8rem;
 }
 

@@ -34,4 +34,47 @@ function convertInputValueToDueDateString(input) {
   return `${hours}-${minutes}-${day}-${month}-${year}`;
 }
 
-export { convertStringToDateAndTime, convertInputValueToDueDateString };
+function convertStringToDateTimeInput(str) {
+  const now = new Date();
+  let [timePart, datePart] = str.split(", ");
+
+  // Default to current date and year if not provided
+  let day = now.getDate();
+  let month = now.getMonth() + 1; // getMonth() is zero-based
+  let year = now.getFullYear();
+
+  if (datePart) {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const dateParts = datePart.split(" ");
+    day = parseInt(dateParts[0]);
+    month = months.indexOf(dateParts[1]) + 1;
+    year = dateParts[2] ? parseInt(dateParts[2]) + 2000 : year;
+  }
+
+  // Parse time
+  const [hours, minutes] = timePart.split(":").map((num) => parseInt(num));
+
+  // Format to YYYY-MM-DDTHH:MM
+  const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
+    .toString()
+    .padStart(2, "0")}T${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+
+  return formattedDate;
+}
+
+export { convertStringToDateAndTime, convertInputValueToDueDateString, convertStringToDateTimeInput };

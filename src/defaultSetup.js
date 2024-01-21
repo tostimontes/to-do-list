@@ -36,7 +36,8 @@ function createTodoObject(form) {
     .querySelector(".selected_priority")
     .textContent.toLowerCase();
   newTodoObject.category = form.querySelector("#category_dropdown").value;
-  newTodoObject.project = form.querySelector("#project_dropdown").value;
+  const selectedProject = form.querySelector("#project_dropdown").selectedIndex;
+  newTodoObject.project = form.querySelector("#project_dropdown")[selectedProject].textContent;
   newTodoObject.status = "pending";
 
   setTodoItem(newTodoObject);
@@ -61,7 +62,6 @@ function deleteTodoItem(object) {
   );
   todoItemsList.splice(indexForRemoval, 1);
   localStorage.removeItem(`${object.project}: ${object.title}`);
-  // TODO: if project display was open, then clear display
   updateProjectItemsDisplay(`${object.category}:${object.project}`);
   updateCategories();
 }

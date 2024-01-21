@@ -5,7 +5,11 @@ import {
   deleteTodoItem,
 } from "./defaultSetup.js";
 import allImages from "./image_bundler.js";
-import { convertStringToDateAndTime } from "./dateConverter.js";
+import {
+  convertStringToDateAndTime,
+  convertStringToDateTimeInput,
+} from "./dateConverter.js";
+import { createDialog, renderProjects } from "./initialUI.js";
 
 const sidebar = document.querySelector("#sidebar");
 const header = document.querySelector("#header");
@@ -168,8 +172,9 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
         (item) =>
           `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
             e.target.parentElement.dataset.project &&
-          `${item.title.toLowerCase()}` === e.target.previousElementSibling.textContent.toLowerCase()
-      ); 
+          `${item.title.toLowerCase()}` ===
+            e.target.previousElementSibling.textContent.toLowerCase()
+      );
       deleteTodoItem(itemForRemoval);
     });
 
@@ -201,29 +206,31 @@ function displayDetails(item) {
   // create elements && append to editPanel
   const detailItemTitle = createDOMElement(
     "h2",
-    { class: "detail detail_title" },
+    { class: "detail", id: "detail_title" },
     `${itemForDisplay.title}`
   );
+  detailItemTitle.dataset.project = `${itemForDisplay.category.toLowerCase()}:${itemForDisplay.project.toLowerCase()}`;
   const subtitleBox = createDOMElement("div", {
     class: "detail detail_subtitle_box",
   });
   // TODO: create and Put important icon next to title if important
+  // TODO: add edit button to details display, ==> FOLLOWED BY FUNCTION TO EDIT
   const detailItemDescription = createDOMElement(
     "p",
-    { class: "detail detail_item_description" },
+    { class: "detail", id: "detail_item_description" },
     `${itemForDisplay.description}`
   );
   let detailItemDueDate;
   if (itemForDisplay.dueDate !== "") {
     detailItemDueDate = createDOMElement(
       "p",
-      { class: "detail detail_due_date" },
+      { class: "detail", id: "detail_due_date" },
       convertStringToDateAndTime(itemForDisplay.dueDate)
     );
   }
   const detailPriority = createDOMElement(
     "p",
-    { class: "detail detail_priority" },
+    { class: "detail", id: "detail_priority" },
     `${itemForDisplay.priority}`
   );
   if (detailItemDueDate !== undefined) {
@@ -232,7 +239,78 @@ function displayDetails(item) {
     subtitleBox.append(detailPriority);
   }
 
-  detailedDisplay.append(detailItemTitle, subtitleBox, detailItemDescription);
+  // Create edit SVG element
+  const svgNS = "http://www.w3.org/2000/svg";
+  let editSVG = document.createElementNS(svgNS, "svg");
+  editSVG.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  editSVG.setAttribute("viewBox", "0 0 24 24");
+  editSVG.setAttribute("id", "edit_button");
+
+  // Create and append the title element
+  let title = document.createElementNS(svgNS, "title");
+  title.textContent = "Edit to-do item";
+  editSVG.appendChild(title);
+
+  // Create and append the path element
+  let path = document.createElementNS(svgNS, "path");
+  path.setAttribute(
+    "d",
+    "M10 19.11L12.11 17H7V15H14V15.12L16.12 13H7V11H17V12.12L18.24 10.89C18.72 10.41 19.35 10.14 20.04 10.14C20.37 10.14 20.7 10.21 21 10.33V5C21 3.89 20.1 3 19 3H5C3.89 3 3 3.89 3 5V19C3 20.11 3.9 21 5 21H10V19.11M7 7H17V9H7V7M21.7 14.35L20.7 15.35L18.65 13.3L19.65 12.3C19.86 12.09 20.21 12.09 20.42 12.3L21.7 13.58C21.91 13.79 21.91 14.14 21.7 14.35M12 19.94L18.06 13.88L20.11 15.93L14.06 22H12V19.94Z"
+  );
+  editSVG.appendChild(path);
+
+  editSVG.addEventListener("click", (e) => {
+    createDialog(true);
+    const form = document.querySelector("form");
+    form.querySelector("#new_item_title_input").value =
+      document.querySelector("#detail_title").textContent;
+    form.querySelector("#new_item_description_input").value =
+      document.querySelector("#detail_item_description").textContent;
+    document.querySelector("#detail_due_date")
+      ? (form.querySelector("#new_item_due_date_input").value =
+          convertStringToDateTimeInput(
+            document.querySelector("#detail_due_date").textContent
+          ))
+      : null;
+    switch (document.querySelector("#detail_priority").textContent) {
+      case "important":
+        document
+          .querySelector("#important_button")
+          .classList.add("selected_priority");
+        break;
+
+      case "normal":
+        document
+          .querySelector("#normal_button")
+          .classList.add("selected_priority");
+
+        break;
+
+      case "optional":
+        document
+          .querySelector("#optional_button")
+          .classList.add("selected_priority");
+
+        break;
+
+      default:
+        break;
+    }
+    form.querySelector("#category_dropdown").value = document
+      .querySelector("#detail_title")
+      .dataset.project.split(":")[0];
+    renderProjects(form.querySelector("#category_dropdown").value);
+    form.querySelector("#project_dropdown").value = document
+      .querySelector("#detail_title")
+      .dataset.project.split(":")[1];
+  });
+
+  detailedDisplay.append(
+    editSVG,
+    detailItemTitle,
+    subtitleBox,
+    detailItemDescription
+  );
 
   // TODO: store pre-edit values
   // TODO: in case no edit, abort edit function

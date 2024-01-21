@@ -6,6 +6,7 @@ import {
   setTodoItem,
   todoItemsList,
   createTodoObject,
+  deleteTodoItem,
 } from "./defaultSetup.js";
 
 function renderInitialUI() {
@@ -113,8 +114,8 @@ function renderInitialUI() {
   sidebar.append(filtersPanel, categoriesPanel);
   footer.append(addItem);
   footer.querySelectorAll(".footer_buttons").forEach((button) => {
-    button.addEventListener("click", (e) => {
-      createDialogs(e.target);
+    button.addEventListener("click", () => {
+      createDialog(false);
     });
   });
   mainDiv.append(breadcrumbsHeader, mainDisplay, footer);
@@ -123,7 +124,7 @@ function renderInitialUI() {
   // updateCategories();
 }
 
-function createDialogs(button) {
+function createDialog(editMode) {
   const body = document.querySelector("body");
   const newItemDialog = createDOMElement("dialog", {
     class: "creation_dialogs",
@@ -163,7 +164,6 @@ function createDialogs(button) {
     placeholder: "Select a due date (optional)",
   });
 
-  // Function to format the date in YYYY-MM-DDTHH:MM format
   // TODO: move minDate funciton to dateConverter.js
   function formatDateTimeLocal(date) {
     const formatted = new Date(
@@ -225,32 +225,6 @@ function createDialogs(button) {
     },
     "Optional"
   );
-  const projectDropdown = createDOMElement("select", {
-    class: "new_item project_select",
-    id: "project_dropdown",
-  });
-  const projectAlert = createDOMElement(
-    "p",
-    { class: "alert_messages", id: "project_alert" },
-    "* Please either choose or create a project"
-  );
-  const projectDiv = createDOMElement("div", {
-    class: "new_item",
-    id: "form_project_div",
-  });
-  projectDiv.append(projectDropdown, projectAlert);
-
-  const defaultProjectText = createDOMElement(
-    "option",
-    {
-      class: "new_item project_options",
-      selected: "",
-      disabled: "",
-      hidden: "",
-    },
-    "Select a project"
-  );
-  projectDropdown.append(defaultProjectText);
   const categoryDropdown = createDOMElement("select", {
     class: "new_item category_select",
     id: "category_dropdown",
@@ -282,22 +256,25 @@ function createDialogs(button) {
     if (e.target.value.toLowerCase() === "add new category") {
       0;
       let newCategory = prompt("Enter new category:");
-      if (newCategory !== null && newCategory || "") {
+      if ((newCategory !== null && newCategory) || "") {
         const newCategoryOption = createDOMElement(
           "option",
-          { class: "category_options", value: `${newCategory}`, selected: "" },
+          {
+            class: "category_options",
+            value: `${newCategory.toLowerCase()}`,
+            selected: "",
+          },
           `${newCategory}`
         );
         categoryDropdown.insertBefore(
           newCategoryOption,
           categoryDropdown.querySelector(`option[value="add new category"`)
         );
-        renderProjects(newCategoryOption.value, projectDiv);
+        renderProjects(newCategoryOption.value);
         createNewProject();
-        // TODO: add listener for new project in old category
       }
     } else {
-      renderProjects(e.target.value, projectDiv);
+      renderProjects(e.target.value);
     }
   });
   const saveButton = createDOMElement(
@@ -347,13 +324,22 @@ function createDialogs(button) {
   saveButton.addEventListener("click", (e) => {
     validateForm(e.target.parentElement);
     if (validateForm(e.target.parentElement)) {
+      if (editMode) {
+        const itemForRemoval = todoItemsList.find(
+          (item) =>
+            `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
+              document.querySelector("#detail_title").dataset.project &&
+            `${item.title.toLowerCase()}` ===
+              document.querySelector("#detail_title").textContent.toLowerCase()
+        );
+        // TODO: edition should end with detail display edited after refreshing
+        deleteTodoItem(itemForRemoval);
+      }
       createTodoObject(e.target.parentElement);
       const projectDisplay =
         document.querySelector("#project_display").firstElementChild;
       if (projectDisplay) {
-        updateProjectItemsDisplay(
-          projectDisplay.dataset.project
-        );
+        updateProjectItemsDisplay(projectDisplay.dataset.project);
       }
       closeModal();
     }
@@ -400,11 +386,11 @@ function renderCategories(dialog) {
     if (
       !dialog
         .querySelector("#category_dropdown")
-        .querySelector(`option[value="${item.category}"]`)
+        .querySelector(`option[value="${item.category.toLowerCase()}"]`)
     ) {
       const categoryOption = createDOMElement(
         "option",
-        { class: "category_options", value: `${item.category}` },
+        { class: "category_options", value: `${item.category.toLowerCase()}` },
         `${item.category}`
       );
       dialog.querySelector("#category_dropdown").append(categoryOption);
@@ -419,7 +405,34 @@ function renderCategories(dialog) {
   dialog.querySelector("#category_dropdown").append(newCategoryOption);
 }
 
-function renderProjects(category, projectDiv) {
+function renderProjects(category) {
+  const projectDropdown = createDOMElement("select", {
+    class: "new_item project_select",
+    id: "project_dropdown",
+  });
+  const projectAlert = createDOMElement(
+    "p",
+    { class: "alert_messages", id: "project_alert" },
+    "* Please either choose or create a project"
+  );
+  const projectDiv = createDOMElement("div", {
+    class: "new_item",
+    id: "form_project_div",
+  });
+  projectDiv.append(projectDropdown, projectAlert);
+
+  const defaultProjectText = createDOMElement(
+    "option",
+    {
+      class: "new_item project_options",
+      selected: "",
+      disabled: "",
+      hidden: "",
+    },
+    "Select a project"
+  );
+  projectDropdown.append(defaultProjectText);
+
   const dialog = document.querySelector("#new_item_dialog");
   if (dialog.querySelector("#category_dropdown").value === "General") {
     projectDiv.remove();
@@ -429,6 +442,7 @@ function renderProjects(category, projectDiv) {
     .querySelector("form")
     .insertBefore(projectDiv, dialog.querySelector("#save_button"));
   projectDiv.querySelector("#project_dropdown").innerHTML = "";
+
   const categoryProjects = todoItemsList.filter(
     (item) => item.category.toLowerCase() === `${category.toLowerCase()}`
   );
@@ -436,11 +450,11 @@ function renderProjects(category, projectDiv) {
     if (
       !dialog
         .querySelector("#project_dropdown")
-        .querySelector(`option[value="${item.project}"]`)
+        .querySelector(`option[value="${item.project.toLowerCase()}"]`)
     ) {
       const projectOption = createDOMElement(
         "option",
-        { class: "project_options", value: `${item.project}` },
+        { class: "project_options", value: `${item.project.toLowerCase()}` },
         `${item.project}`
       );
       dialog.querySelector(".project_select").append(projectOption);
@@ -491,4 +505,4 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-export { renderInitialUI, createDialogs, renderCategories, renderProjects };
+export { renderInitialUI, createDialog, renderCategories, renderProjects };
