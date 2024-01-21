@@ -12,5 +12,6 @@ To improve:
 - Add agenda, important and completed filter views
 - Add edition features for categories and projects' names
 - Add animations
+- Separate functions in more modules
 
 Visit the site at: https://tostimontes.github.io/to-do-list/
