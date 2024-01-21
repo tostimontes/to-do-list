@@ -366,6 +366,7 @@ function renderProjects(category) {
     class: "new_item project_select",
     id: "project_dropdown",
   });
+  const generalProject = createDOMElement("option", {class: "project_options", value: "general"}, "General");
   const projectAlert = createDOMElement(
     "p",
     { class: "alert_messages", id: "project_alert" },
@@ -428,6 +429,11 @@ function renderProjects(category) {
     }
   });
   dialog.querySelector(".project_select").append(newProjectOption);
+  projectDropdown.append(generalProject);
+
+  if (document.querySelector("#category_dropdown").value === "general") {
+    newProjectOption.remove();
+  }
 }
 
 function createNewProject() {
