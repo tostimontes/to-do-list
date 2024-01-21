@@ -62,7 +62,24 @@ function updateCategories() {
         "x"
       );
       removalButton.addEventListener("click", (e) => {
+        const header = document.querySelector("#header");
+        const currentHeader = `${header
+          .querySelector(".category_breadcrumb")
+          .textContent.toLowerCase()}:${header
+          .querySelector(".project_breadcrumb")
+          .textContent.toLowerCase()}`;
+        const removalCategoryAndProject =
+          e.target.previousElementSibling.dataset.project;
         deleteProject(e.target.previousElementSibling);
+        if (
+          currentHeader === removalCategoryAndProject
+        ) {
+          header.innerHTML = "";
+          document.querySelector("#project_display").innerHTML = "";
+          document.querySelector("#completed_items_display").innerHTML = "";
+        } else {
+          updateProjectItemsDisplay(currentHeader)
+        }
       });
 
       const sidebarProjectDiv = createDOMElement("div", {
@@ -128,7 +145,7 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
   const projectItems = todoItemsList.filter(
     (item) =>
       `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
-      `${selectedProjectTitle.toLowerCase()}`
+      selectedProjectTitle.toLowerCase()
   );
 
   for (const item of projectItems) {

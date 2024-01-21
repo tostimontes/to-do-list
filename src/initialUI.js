@@ -8,6 +8,8 @@ import {
   createTodoObject,
   deleteTodoItem,
 } from "./defaultSetup.js";
+import "@fortawesome/fontawesome-free/css/all.css";
+
 
 function renderInitialUI() {
   const body = document.querySelector("body");
@@ -27,76 +29,81 @@ function renderInitialUI() {
     { class: "footer button footer_buttons", id: "add_item" },
     "+ New Item"
   );
-  const filtersPanel = createDOMElement("div", {
-    class: "sidebar",
-    id: "filters_panel",
-  });
-  const agendaDiv = createDOMElement("div", {
-    class: "sidebar category_div default_category",
-    id: "agenda_div",
-  });
-  const agendaIcon = createDOMElement("img", {
-    class: "svg sidebar",
-    id: "agenda_icon",
-    src: `${allImages["SVGs"]["calendar.svg"]}`,
-  });
-  const agendaP = createDOMElement(
-    "p",
-    { class: "sidebar default_category", id: "agenda_p" },
-    "Agenda"
-  );
-  agendaDiv.append(agendaIcon, agendaP);
-  const allDiv = createDOMElement("div", {
-    class: "sidebar category_div default_category",
-    id: "all_div",
-  });
-  // TODO: add listeners to main categories (after completion feature implemented)
-  const allP = createDOMElement(
-    "p",
-    { class: "sidebar default_category", id: "all_p" },
-    "All"
-  );
-  const allIcon = createDOMElement("img", {
-    class: "svg sidebar",
-    id: "all_icon",
-    src: `${allImages["SVGs"]["list.svg"]}`,
-  });
-  allDiv.append(allIcon, allP);
-  const importantDiv = createDOMElement("div", {
-    class: "sidebar category_div default_category",
-    id: "important_div",
-  });
-  const importantP = createDOMElement(
-    "p",
-    { class: "sidebar default_category", id: "important_p" },
-    "Important"
-  );
-  const importantIcon = createDOMElement("img", {
-    class: "svg sidebar",
-    id: "important_icon",
-    src: `${allImages["SVGs"]["urgent.svg"]}`,
-  });
-  importantDiv.append(importantIcon, importantP);
-  const completedDiv = createDOMElement("div", {
-    class: "sidebar category_div default_category",
-    id: "completed_div",
-  });
-  const completedP = createDOMElement(
-    "p",
-    { class: "sidebar default_cate19gory", id: "completed_p" },
-    "Completed"
-  );
-  const completedIcon = createDOMElement("img", {
-    class: "svg sidebar",
-    id: "completed_icon",
-    src: `${allImages["SVGs"]["check.svg"]}`,
-  });
-  completedDiv.append(completedIcon, completedP);
+  // const filtersPanel = createDOMElement("div", {
+  //   class: "sidebar",
+  //   id: "filters_panel",
+  // });
+  // const agendaDiv = createDOMElement("div", {
+  //   class: "sidebar category_div default_category",
+  //   id: "agenda_div",
+  // });
+  // const agendaIcon = createDOMElement("img", {
+  //   class: "svg sidebar",
+  //   id: "agenda_icon",
+  //   src: `${allImages["SVGs"]["calendar.svg"]}`,
+  // });
+  // const agendaP = createDOMElement(
+  //   "p",
+  //   { class: "sidebar default_category", id: "agenda_p" },
+  //   "Agenda"
+  // );
+  // agendaDiv.append(agendaIcon, agendaP);
+
+  // // TODO: add listeners to main categories (after completion feature implemented)
+
+  // const importantDiv = createDOMElement("div", {
+  //   class: "sidebar category_div default_category",
+  //   id: "important_div",
+  // });
+  // const importantP = createDOMElement(
+  //   "p",
+  //   { class: "sidebar default_category", id: "important_p" },
+  //   "Important"
+  // );
+  // const importantIcon = createDOMElement("img", {
+  //   class: "svg sidebar",
+  //   id: "important_icon",
+  //   src: `${allImages["SVGs"]["urgent.svg"]}`,
+  // });
+  // importantDiv.append(importantIcon, importantP);
+  // const completedDiv = createDOMElement("div", {
+  //   class: "sidebar category_div default_category",
+  //   id: "completed_div",
+  // });
+  // const completedP = createDOMElement(
+  //   "p",
+  //   { class: "sidebar default_category", id: "completed_p" },
+  //   "Completed"
+  // );
+  // const completedIcon = createDOMElement("img", {
+  //   class: "svg sidebar",
+  //   id: "completed_icon",
+  //   src: `${allImages["SVGs"]["check.svg"]}`,
+  // });
+  // completedDiv.append(completedIcon, completedP);
 
   const categoriesPanel = createDOMElement("div", {
     class: "sidebar",
     id: "categories_panel",
   });
+  const signatureDiv = createDOMElement("div", { id: "signature_div" });
+  const signatureP = createDOMElement(
+    "p",
+    { class: "signature", id: "signature_p" },
+    "by"
+  );
+  const signatureSpan = createDOMElement(
+    "span",
+    { class: "signature", id: "signature_span" },
+    "tostimontes"
+  );
+  const signatureGHLink = createDOMElement("a", {
+    id: "signture_github_link",
+    href: "https://github.com/tostimontes/to-do-list",
+  });
+  const githubFavicon = createDOMElement("i", { class: "fab fa-github" });
+  signatureGHLink.appendChild(githubFavicon);
+  signatureDiv.append(signatureP, signatureSpan, signatureGHLink);
   const projectDisplayContainer = createDOMElement("div", {
     class: "main",
     id: "project_display_container",
@@ -115,9 +122,8 @@ function renderInitialUI() {
     id: "detail_display",
   });
 
-  filtersPanel.append(allDiv, completedDiv, importantDiv, agendaDiv);
   mainDisplay.append(projectDisplayContainer, detailDisplay);
-  sidebar.append(filtersPanel, categoriesPanel);
+  sidebar.append(categoriesPanel, signatureDiv);
   footer.append(addItem);
   footer.querySelectorAll(".footer_buttons").forEach((button) => {
     button.addEventListener("click", () => {
@@ -126,8 +132,6 @@ function renderInitialUI() {
   });
   mainDiv.append(breadcrumbsHeader, mainDisplay, footer);
   body.append(sidebar, mainDiv);
-
-  // updateCategories();
 }
 
 function createDialog(editMode) {
@@ -329,6 +333,11 @@ function createDialog(editMode) {
   saveButton.addEventListener("click", (e) => {
     validateForm(e.target.parentElement);
     if (validateForm(e.target.parentElement)) {
+      let projectTitle = `${document
+        .querySelector(".category_breadcrumb")
+        .textContent.toLowerCase()}:${document
+        .querySelector(".project_breadcrumb")
+        .textContent.toLowerCase()}`;
       if (editMode) {
         const itemForRemoval = todoItemsList.find(
           (item) =>
@@ -337,14 +346,12 @@ function createDialog(editMode) {
             `${item.title.toLowerCase()}` ===
               document.querySelector("#detail_title").textContent.toLowerCase()
         );
-        // TODO: edition should end with detail display edited after refreshing
         deleteTodoItem(itemForRemoval);
       }
       createTodoObject(e.target.parentElement);
-      const projectDisplay =
-        document.querySelector("#project_display").firstElementChild;
-      if (projectDisplay) {
-        updateProjectItemsDisplay(projectDisplay.dataset.project);
+
+      if (projectTitle) {
+        updateProjectItemsDisplay(projectTitle);
       }
       closeModal();
     }

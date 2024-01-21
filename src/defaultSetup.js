@@ -60,11 +60,6 @@ function deleteTodoItem(object) {
 }
 
 
-function editTodoItem(oldObject, newObject) {
-  deleteTodoItem(oldObject);
-  setTodoItem(newObject);
-}
-
 function deleteProject(selectedProjectTitle) {
   const projectForRemoval = todoItemsList.filter(
     (item) =>
@@ -82,7 +77,6 @@ function capitalizeFirstLetter(string) {
 
 export {
   setTodoItem,
-  editTodoItem,
   deleteTodoItem,
   todoItemsList,
   createTodoObject,
