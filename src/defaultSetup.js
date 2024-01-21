@@ -13,13 +13,6 @@ import { convertInputValueToDueDateString } from "./dateConverter.js";
 
 const todoItemsList = [];
 
-// function getTodoItems() {
-//   todoItemsList = [];
-//   for (const item in localStorage) {
-//       todoItemsList.push(JSON.parse(localStorage.getItem(item)))
-//     }
-// }
-
 function createTodoObject(form) {
   const newTodoObject = {};
   newTodoObject.title = form.querySelector("#new_item_title_input").value;
@@ -80,18 +73,8 @@ function deleteProject(selectedProjectTitle) {
   for (const item of projectForRemoval) {
     deleteTodoItem(item);
   }
-  // updateCategories();
-  // updateProjectItemsDisplay(selectedProjectTitle.dataset.project);
 }
 
-// TODO: at the end of displayDetails function, add behavior: old should store
-// TODO: attention to close behavior, before any detailsDisplay.innerHTML == "", ther should be a editTodoItem trigger
-
-// TODO: attention: any edit, removal, or set should updateUI
-
-// each category is an index in an array
-// in projects (which is an array), each index corresponds to a category
-// each category array hosts projects arrays, which host todo objects
 
 export {
   setTodoItem,

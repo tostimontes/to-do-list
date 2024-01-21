@@ -98,19 +98,26 @@ function renderInitialUI() {
     class: "sidebar",
     id: "categories_panel",
   });
-
+  const projectDisplayContainer = createDOMElement("div", {
+    class: "main",
+    id: "project_display_container",
+  });
   const projectDisplay = createDOMElement("div", {
     class: "main",
     id: "project_display",
   });
+  const completedItemsDisplay = createDOMElement("div", {
+    class: "main",
+    id: "completed_items_display",
+  });
+  projectDisplayContainer.append(projectDisplay, completedItemsDisplay);
   const detailDisplay = createDOMElement("div", {
     class: "main",
     id: "detail_display",
   });
 
   filtersPanel.append(allDiv, completedDiv, importantDiv, agendaDiv);
-  // create categores panel as ul, each cat should be foldable
-  mainDisplay.append(projectDisplay, detailDisplay);
+  mainDisplay.append(projectDisplayContainer, detailDisplay);
   sidebar.append(filtersPanel, categoriesPanel);
   footer.append(addItem);
   footer.querySelectorAll(".footer_buttons").forEach((button) => {
@@ -406,6 +413,7 @@ function renderCategories(dialog) {
 }
 
 function renderProjects(category) {
+  // TODO: project and category names should be editable
   const projectDropdown = createDOMElement("select", {
     class: "new_item project_select",
     id: "project_dropdown",

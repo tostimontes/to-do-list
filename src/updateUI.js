@@ -100,6 +100,24 @@ function updateCategories() {
 function updateProjectItemsDisplay(selectedProjectTitle) {
   const projectDisplay = document.querySelector("#project_display");
   projectDisplay.innerHTML = "";
+  const pendingTitle = createDOMElement(
+    "h2",
+    { class: "main", id: "pending_project_display_title" },
+    "Pending"
+  );
+  projectDisplay.append(pendingTitle);
+
+  const completedItemsDisplay = document.querySelector(
+    "#completed_items_display"
+  );
+  completedItemsDisplay.innerHTML = "";
+  const completedTitle = createDOMElement(
+    "h2",
+    { class: "main", id: "completed_project_display_title" },
+    "Completed"
+  );
+  completedItemsDisplay.append(completedTitle);
+
   const detailedDisplay = document.querySelector("#detail_display");
   detailedDisplay.innerHTML = "";
 
@@ -119,7 +137,21 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
       src: `${allImages["SVGs"]["checkbox.svg"]}`,
     });
     itemCheckbox.addEventListener("click", (e) => {
-      completeTodoItem(e.target);
+      const itemToComplete = todoItemsList.find(
+        (item) =>
+          `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
+            e.target.parentElement.dataset.project &&
+          `${item.title.toLowerCase()}` ===
+            e.target.parentElement.querySelector(".item_titles").dataset.title
+      );
+      if (itemToComplete.status === "pending") {
+        itemToComplete.status = "completed";
+      } else {
+        itemToComplete.status = "pending";
+      }
+      updateProjectItemsDisplay(
+        `${itemToComplete.category.toLowerCase()}:${itemToComplete.project.toLowerCase()}`
+      );
     });
     itemDiv.append(itemCheckbox);
 
@@ -187,9 +219,14 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
       e.target.querySelector("button").style.display = "none";
     });
 
-    projectDisplay.appendChild(itemDiv);
+    if (item.status === "completed") {
+      itemDiv.style.textDecoration = "line-through";
+      completedItemsDisplay.append(itemDiv);
+    } else {
+      projectDisplay.appendChild(itemDiv);
+    }
 
-    item.status === "completed" ? completeTodoItem(item) : null;
+    // TODO: erase due date from item, apply tachado and check mark
   }
 }
 
@@ -311,15 +348,6 @@ function displayDetails(item) {
     subtitleBox,
     detailItemDescription
   );
-
-  // TODO: store pre-edit values
-  // TODO: in case no edit, abort edit function
-}
-
-function completeTodoItem(item) {
-  // add completed class --> completed class automatically goes down
-  // item.classList.remove("completed");
-  // updateProjectItemsDisplay(item.project);
 }
 
 // TODO: create function for completed  ;

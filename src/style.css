@@ -236,15 +236,21 @@ body {
   display: flex;
 }
 
-#project_display {
+#project_display_container {
   width: 60%;
   height: 100%;
   overflow-y: auto;
   background-color: var(--white-coral);
-  padding: 2rem;
   font-family: "Roboto", sans-serif;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+}
+
+#project_display, #completed_items_display {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
   gap: 1rem;
 }
 
