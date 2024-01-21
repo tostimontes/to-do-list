@@ -75,6 +75,10 @@ function deleteProject(selectedProjectTitle) {
   }
 }
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 
 export {
   setTodoItem,
@@ -82,5 +86,6 @@ export {
   deleteTodoItem,
   todoItemsList,
   createTodoObject,
-  deleteProject
+  deleteProject,
+  capitalizeFirstLetter
 };

@@ -3,6 +3,7 @@ import {
   todoItemsList,
   deleteProject,
   deleteTodoItem,
+  capitalizeFirstLetter,
 } from "./defaultSetup.js";
 import allImages from "./image_bundler.js";
 import {
@@ -32,7 +33,10 @@ function updateCategories() {
     },
     "GENERAL"
   );
-  // TODO: add listener to display general todo items
+  generalCategory.style.cursor = "pointer";
+  generalCategory.addEventListener("click", (e) => {
+    updateProjectItemsDisplay("general:general");
+  });
   categoriesPanel.append(generalCategory);
   for (const item of todoItemsList) {
     if (
@@ -225,9 +229,33 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
     } else {
       projectDisplay.appendChild(itemDiv);
     }
-
-    // TODO: erase due date from item, apply tachado and check mark
   }
+
+  // Breadcrumbs
+  const categoryAndProject = selectedProjectTitle.split(":");
+  const formattedProject = categoryAndProject[1]
+    .split(" ")
+    .map((string) => capitalizeFirstLetter(string));
+  const categoryBreadcrumb = createDOMElement(
+    "p",
+    { class: "category_breadcrumb" },
+    `${categoryAndProject[0].toUpperCase()}`
+  );
+  const angleBracket = createDOMElement(
+    "div",
+    { class: "angle_brackets" },
+    ">"
+  );
+
+  const projectBreadcrumb = createDOMElement(
+    "p",
+    { class: "project_breadcrumb" },
+    `${formattedProject.join(" ")}`
+  );
+
+  const breadcrumbsHeader = document.querySelector("#header");
+  breadcrumbsHeader.innerHTML = "";
+  breadcrumbsHeader.append(categoryBreadcrumb, angleBracket, projectBreadcrumb);
 }
 
 function displayDetails(item) {
@@ -250,8 +278,6 @@ function displayDetails(item) {
   const subtitleBox = createDOMElement("div", {
     class: "detail detail_subtitle_box",
   });
-  // TODO: create and Put important icon next to title if important
-  // TODO: add edit button to details display, ==> FOLLOWED BY FUNCTION TO EDIT
   const detailItemDescription = createDOMElement(
     "p",
     { class: "detail", id: "detail_item_description" },
@@ -268,7 +294,9 @@ function displayDetails(item) {
   const detailPriority = createDOMElement(
     "p",
     { class: "detail", id: "detail_priority" },
-    `${itemForDisplay.priority}`
+    `${itemForDisplay.priority
+      .charAt(0)
+      .toUpperCase()}${itemForDisplay.priority.slice(1)}`
   );
   if (detailItemDueDate !== undefined) {
     subtitleBox.append(detailPriority, detailItemDueDate);
@@ -309,7 +337,9 @@ function displayDetails(item) {
             document.querySelector("#detail_due_date").textContent
           ))
       : null;
-    switch (document.querySelector("#detail_priority").textContent) {
+    switch (
+      document.querySelector("#detail_priority").textContent.toLowerCase()
+    ) {
       case "important":
         document
           .querySelector("#important_button")
@@ -349,12 +379,5 @@ function displayDetails(item) {
     detailItemDescription
   );
 }
-
-// TODO: create function for completed  ;
-// updatetodo item display editable with full description
-
-// create items with none display
-// create categories
-// create projects
 
 export { updateCategories, updateProjectItemsDisplay, displayDetails };

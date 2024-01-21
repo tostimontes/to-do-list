@@ -228,6 +228,12 @@ body {
   width: 100%;
   height: 4rem;
   background-color: var(--medium-coral);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
 }
 
 #main_display {

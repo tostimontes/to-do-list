@@ -17,7 +17,6 @@ function renderInitialUI() {
     class: "main",
     id: "header",
   });
-  // TODO: add display of current project on display
   const mainDisplay = createDOMElement("div", {
     class: "main",
     id: "main_display",
@@ -171,7 +170,6 @@ function createDialog(editMode) {
     placeholder: "Select a due date (optional)",
   });
 
-  // TODO: move minDate funciton to dateConverter.js
   function formatDateTimeLocal(date) {
     const formatted = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
