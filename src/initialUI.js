@@ -16,6 +16,7 @@ function renderInitialUI() {
     class: "main",
     id: "header",
   });
+  // TODO: add display of current project on display
   const mainDisplay = createDOMElement("div", {
     class: "main",
     id: "main_display",
@@ -49,6 +50,7 @@ function renderInitialUI() {
     class: "sidebar category_div default_category",
     id: "all_div",
   });
+  // TODO: add listeners to main categories (after completion feature implemented)
   const allP = createDOMElement(
     "p",
     { class: "sidebar default_category", id: "all_p" },
@@ -162,6 +164,7 @@ function createDialogs(button) {
   });
 
   // Function to format the date in YYYY-MM-DDTHH:MM format
+  // TODO: move minDate funciton to dateConverter.js
   function formatDateTimeLocal(date) {
     const formatted = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
@@ -277,19 +280,22 @@ function createDialogs(button) {
 
   categoryDropdown.addEventListener("change", (e) => {
     if (e.target.value.toLowerCase() === "add new category") {
+      0;
       let newCategory = prompt("Enter new category:");
-      const newCategoryOption = createDOMElement(
-        "option",
-        { class: "category_options", value: `${newCategory}`, selected: "" },
-        `${newCategory}`
-      );
-      categoryDropdown.insertBefore(
-        newCategoryOption,
-        categoryDropdown.querySelector(`option[value="add new category"`)
-      );
-      renderProjects(newCategoryOption, projectDiv);
-      createNewProject();
-      // TODO: add listener for new project in old category
+      if (newCategory !== null && newCategory || "") {
+        const newCategoryOption = createDOMElement(
+          "option",
+          { class: "category_options", value: `${newCategory}`, selected: "" },
+          `${newCategory}`
+        );
+        categoryDropdown.insertBefore(
+          newCategoryOption,
+          categoryDropdown.querySelector(`option[value="add new category"`)
+        );
+        renderProjects(newCategoryOption.value, projectDiv);
+        createNewProject();
+        // TODO: add listener for new project in old category
+      }
     } else {
       renderProjects(e.target.value, projectDiv);
     }
@@ -337,10 +343,18 @@ function createDialogs(button) {
     categoryDiv
   );
   newItemDialog.append(newItemForm);
+
   saveButton.addEventListener("click", (e) => {
     validateForm(e.target.parentElement);
     if (validateForm(e.target.parentElement)) {
       createTodoObject(e.target.parentElement);
+      const projectDisplay =
+        document.querySelector("#project_display").firstElementChild;
+      if (projectDisplay) {
+        updateProjectItemsDisplay(
+          projectDisplay.dataset.project
+        );
+      }
       closeModal();
     }
   });
@@ -404,6 +418,7 @@ function renderCategories(dialog) {
   );
   dialog.querySelector("#category_dropdown").append(newCategoryOption);
 }
+
 function renderProjects(category, projectDiv) {
   const dialog = document.querySelector("#new_item_dialog");
   if (dialog.querySelector("#category_dropdown").value === "General") {
@@ -437,21 +452,31 @@ function renderProjects(category, projectDiv) {
     { class: "project_options", value: "add new project" },
     "Add New Project"
   );
-  newProjectOption.addEventListener("click", (e) => {
-    document.querySelector("#new_project_dialog").showModal();
+  dialog.querySelector(".project_select").addEventListener("click", (e) => {
+    if (e.target.value === "add new project") {
+      createNewProject();
+    }
   });
   dialog.querySelector(".project_select").append(newProjectOption);
 }
 
 function createNewProject() {
   let newProject = prompt("Enter new project name:");
-  const newProjectOption = createDOMElement("option", {class: "project_options", value: `${newProject}`}, `${newProject}`);
-  document
-    .querySelector("#project_dropdown")
-    .insertBefore(
-      newProjectOption,
-      document.querySelector("#project_dropdown").querySelector(`option[value="add new project"]`)
+  if (newProject !== null && newProject !== "") {
+    const newProjectOption = createDOMElement(
+      "option",
+      { class: "project_options", value: `${newProject}`, selected: "" },
+      `${newProject}`
     );
+    document
+      .querySelector("#project_dropdown")
+      .insertBefore(
+        newProjectOption,
+        document
+          .querySelector("#project_dropdown")
+          .querySelector(`option[value="add new project"]`)
+      );
+  }
 }
 
 function closeModal() {

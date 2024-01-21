@@ -48,6 +48,7 @@ function setTodoItem(object) {
     `${object.project}: ${object.title}`,
     JSON.stringify(object)
   );
+
   updateCategories();
 }
 
@@ -60,7 +61,6 @@ function deleteTodoItem(object) {
   );
   todoItemsList.splice(indexForRemoval, 1);
   localStorage.removeItem(`${object.project}: ${object.title}`);
-  // updateCategories();
   // TODO: if project display was open, then clear display
   updateProjectItemsDisplay(`${object.category}:${object.project}`);
   updateCategories();

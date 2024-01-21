@@ -28,6 +28,7 @@ function updateCategories() {
     },
     "GENERAL"
   );
+  // TODO: add listener to display general todo items
   categoriesPanel.append(generalCategory);
   for (const item of todoItemsList) {
     if (
@@ -163,7 +164,12 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
       "x"
     );
     itemRemovalButton.addEventListener("click", (e) => {
-      const itemForRemoval = todoItemsList.find(item => `${item.category.toLowerCase()}:${item.project.toLowerCase()}` === e.target.parentElement.dataset.project); 
+      const itemForRemoval = todoItemsList.find(
+        (item) =>
+          `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
+            e.target.parentElement.dataset.project &&
+          `${item.title.toLowerCase()}` === e.target.previousElementSibling.textContent.toLowerCase()
+      ); 
       deleteTodoItem(itemForRemoval);
     });
 
