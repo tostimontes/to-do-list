@@ -1,15 +1,13 @@
 import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
 import "./style.css";
-import { updateCategories, updateProjectItemsDisplay } from "./updateUI.js";
-import allImages from "./image_bundler.js";
+import { updateProjectItemsDisplay } from "./updateUI.js";
 import {
-  setTodoItem,
   todoItemsList,
   createTodoObject,
   deleteTodoItem,
-} from "./defaultSetup.js";
+  generateTestItems,
+} from "./appLogicFunctions.js";
 import "@fortawesome/fontawesome-free/css/all.css";
-
 
 function renderInitialUI() {
   const body = document.querySelector("body");
@@ -29,58 +27,11 @@ function renderInitialUI() {
     { class: "footer button footer_buttons", id: "add_item" },
     "+ New Item"
   );
-  // const filtersPanel = createDOMElement("div", {
-  //   class: "sidebar",
-  //   id: "filters_panel",
-  // });
-  // const agendaDiv = createDOMElement("div", {
-  //   class: "sidebar category_div default_category",
-  //   id: "agenda_div",
-  // });
-  // const agendaIcon = createDOMElement("img", {
-  //   class: "svg sidebar",
-  //   id: "agenda_icon",
-  //   src: `${allImages["SVGs"]["calendar.svg"]}`,
-  // });
-  // const agendaP = createDOMElement(
-  //   "p",
-  //   { class: "sidebar default_category", id: "agenda_p" },
-  //   "Agenda"
-  // );
-  // agendaDiv.append(agendaIcon, agendaP);
-
-  // // TODO: add listeners to main categories (after completion feature implemented)
-
-  // const importantDiv = createDOMElement("div", {
-  //   class: "sidebar category_div default_category",
-  //   id: "important_div",
-  // });
-  // const importantP = createDOMElement(
-  //   "p",
-  //   { class: "sidebar default_category", id: "important_p" },
-  //   "Important"
-  // );
-  // const importantIcon = createDOMElement("img", {
-  //   class: "svg sidebar",
-  //   id: "important_icon",
-  //   src: `${allImages["SVGs"]["urgent.svg"]}`,
-  // });
-  // importantDiv.append(importantIcon, importantP);
-  // const completedDiv = createDOMElement("div", {
-  //   class: "sidebar category_div default_category",
-  //   id: "completed_div",
-  // });
-  // const completedP = createDOMElement(
-  //   "p",
-  //   { class: "sidebar default_category", id: "completed_p" },
-  //   "Completed"
-  // );
-  // const completedIcon = createDOMElement("img", {
-  //   class: "svg sidebar",
-  //   id: "completed_icon",
-  //   src: `${allImages["SVGs"]["check.svg"]}`,
-  // });
-  // completedDiv.append(completedIcon, completedP);
+  const testItemsGenerator = createDOMElement(
+    "div",
+    { class: "footer button footer_buttons", id: "test_generator" },
+    "GENERATE TEST ITEMS"
+  );
 
   const categoriesPanel = createDOMElement("div", {
     class: "sidebar",
@@ -124,12 +75,15 @@ function renderInitialUI() {
 
   mainDisplay.append(projectDisplayContainer, detailDisplay);
   sidebar.append(categoriesPanel, signatureDiv);
-  footer.append(addItem);
-  footer.querySelectorAll(".footer_buttons").forEach((button) => {
-    button.addEventListener("click", () => {
-      createDialog(false);
-    });
+  footer.append(addItem, testItemsGenerator);
+  addItem.addEventListener("click", () => {
+    createDialog(false);
   });
+  testItemsGenerator.addEventListener("click", () => {
+    generateTestItems();
+    testItemsGenerator.remove();
+  });
+
   mainDiv.append(breadcrumbsHeader, mainDisplay, footer);
   body.append(sidebar, mainDiv);
 }
@@ -183,13 +137,11 @@ function createDialog(editMode) {
     return formatted;
   }
 
-  // Set the minimum date and time for the datetime-local input
   function setMinDateTime() {
     const now = new Date();
     dueDateInput.min = formatDateTimeLocal(now);
   }
 
-  // Call the function to set the min datetime
   setMinDateTime();
 
   const priorityButtonsDiv = createDOMElement("div", {
@@ -292,22 +244,6 @@ function createDialog(editMode) {
     "SAVE"
   );
 
-  const newProjectInput = createDOMElement("input", {
-    class: "new_project",
-    id: "new_project_input",
-    type: "text",
-    required: "",
-    placeholder: "Enter new project's title",
-  });
-
-  const newCategoryInput = createDOMElement("input", {
-    class: "new_category",
-    id: "new_cateogry_input",
-    type: "text",
-    required: "",
-    placeholder: "Enter new category name",
-  });
-
   priorityButtonsDiv.append(importantButton, normalButton, optionalButton);
   priorityButtonsDiv.addEventListener("click", (e) => {
     if (!e.target.classList.contains("priority_buttons")) {
@@ -333,11 +269,14 @@ function createDialog(editMode) {
   saveButton.addEventListener("click", (e) => {
     validateForm(e.target.parentElement);
     if (validateForm(e.target.parentElement)) {
-      let projectTitle = `${document
-        .querySelector(".category_breadcrumb")
-        .textContent.toLowerCase()}:${document
-        .querySelector(".project_breadcrumb")
-        .textContent.toLowerCase()}`;
+      let projectTitle = "";
+      if (document.querySelector("#header").innerHTML !== "") {
+        projectTitle = `${document
+          .querySelector(".category_breadcrumb")
+          .textContent.toLowerCase()}:${document
+          .querySelector(".project_breadcrumb")
+          .textContent.toLowerCase()}`;
+      }
       if (editMode) {
         const itemForRemoval = todoItemsList.find(
           (item) =>
@@ -389,11 +328,16 @@ function validateForm(form) {
   }
 
   return validForm;
-
-  //   if any fail, prevent default stop exec
 }
 
 function renderCategories(dialog) {
+  const generalCategory = createDOMElement(
+    "option",
+    { class: "category_options", value: "general" },
+    "General"
+  );
+  dialog.querySelector("#category_dropdown").append(generalCategory);
+
   for (const item of todoItemsList) {
     if (
       !dialog
@@ -418,7 +362,6 @@ function renderCategories(dialog) {
 }
 
 function renderProjects(category) {
-  // TODO: project and category names should be editable
   const projectDropdown = createDOMElement("select", {
     class: "new_item project_select",
     id: "project_dropdown",

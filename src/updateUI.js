@@ -4,21 +4,13 @@ import {
   deleteProject,
   deleteTodoItem,
   capitalizeFirstLetter,
-} from "./defaultSetup.js";
+} from "./appLogicFunctions.js";
 import allImages from "./image_bundler.js";
 import {
   convertStringToDateAndTime,
   convertStringToDateTimeInput,
 } from "./dateConverter.js";
 import { createDialog, renderProjects } from "./initialUI.js";
-
-const sidebar = document.querySelector("#sidebar");
-const header = document.querySelector("#header");
-const mainDisplay = document.querySelector("#main_display");
-const footer = document.querySelector("#footer");
-const element = document.querySelector("selector");
-const categoriesPanel = document.querySelector("#categories_panel");
-const projectDisplay = document.querySelector("#project_display");
 
 function updateCategories() {
   const categoriesPanel = document.querySelector("#categories_panel");

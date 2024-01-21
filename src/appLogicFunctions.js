@@ -1,12 +1,3 @@
-import {
-  format,
-  addDays,
-  subDays,
-  differenceInDays,
-  isAfter,
-  isBefore,
-  parseISO,
-} from "date-fns";
 import { setTodoList } from "./todoGenerator.js";
 import { updateCategories, updateProjectItemsDisplay } from "./updateUI.js";
 import { convertInputValueToDueDateString } from "./dateConverter.js";
@@ -19,8 +10,7 @@ function createTodoObject(form) {
   newTodoObject.description = form.querySelector(
     "#new_item_description_input"
   ).value;
-  form.querySelector("#new_item_due_date_input").value
-   === ""
+  form.querySelector("#new_item_due_date_input").value === ""
     ? (newTodoObject.dueDate = "")
     : (newTodoObject.dueDate = convertInputValueToDueDateString(
         form.querySelector("#new_item_due_date_input").value
@@ -30,7 +20,8 @@ function createTodoObject(form) {
     .textContent.toLowerCase();
   newTodoObject.category = form.querySelector("#category_dropdown").value;
   const selectedProject = form.querySelector("#project_dropdown").selectedIndex;
-  newTodoObject.project = form.querySelector("#project_dropdown")[selectedProject].textContent;
+  newTodoObject.project =
+    form.querySelector("#project_dropdown")[selectedProject].textContent;
   newTodoObject.status = "pending";
 
   setTodoItem(newTodoObject);
@@ -46,7 +37,6 @@ function setTodoItem(object) {
   updateCategories();
 }
 
-
 function deleteTodoItem(object) {
   const indexForRemoval = todoItemsList.findIndex(
     (item) =>
@@ -59,11 +49,11 @@ function deleteTodoItem(object) {
   updateCategories();
 }
 
-
 function deleteProject(selectedProjectTitle) {
   const projectForRemoval = todoItemsList.filter(
     (item) =>
-      `${item.category.toLowerCase()}:${item.project.toLowerCase()}` === selectedProjectTitle.dataset.project
+      `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
+      selectedProjectTitle.dataset.project
   );
   for (const item of projectForRemoval) {
     deleteTodoItem(item);
@@ -74,6 +64,11 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function generateTestItems() {
+  for (const item of setTodoList) {
+    setTodoItem(item);
+  }
+}
 
 export {
   setTodoItem,
@@ -81,5 +76,6 @@ export {
   todoItemsList,
   createTodoObject,
   deleteProject,
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
+  generateTestItems,
 };

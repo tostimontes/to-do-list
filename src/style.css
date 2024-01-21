@@ -218,7 +218,6 @@ body {
 
 .custom_category_titles {
   font-weight: bold;
-  /* TODO: solve montserrat variability */
 }
 
 .sidebar_project_div {
@@ -370,9 +369,6 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-#detail_due_date {
 }
 
 #detail_item_description {
