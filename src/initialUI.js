@@ -289,6 +289,7 @@ function createDialogs(button) {
       );
       renderProjects(newCategoryOption, projectDiv);
       createNewProject();
+      // TODO: add listener for new project in old category
     } else {
       renderProjects(e.target.value, projectDiv);
     }

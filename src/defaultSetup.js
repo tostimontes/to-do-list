@@ -8,7 +8,7 @@ import {
   parseISO,
 } from "date-fns";
 import { setTodoList } from "./todoGenerator.js";
-import { updateCategories } from "./updateUI.js";
+import { updateCategories, updateProjectItemsDisplay } from "./updateUI.js";
 import { convertInputValueToDueDateString } from "./dateConverter.js";
 
 const todoItemsList = [];
@@ -60,24 +60,28 @@ function deleteTodoItem(object) {
   );
   todoItemsList.splice(indexForRemoval, 1);
   localStorage.removeItem(`${object.project}: ${object.title}`);
+  // updateCategories();
+  // TODO: if project display was open, then clear display
+  updateProjectItemsDisplay(`${object.category}:${object.project}`);
+  updateCategories();
 }
 
-// TODO: add REMOVE button on hover todos checkbox && projects (projects should display remove button only on hover) + AEL
 
 function editTodoItem(oldObject, newObject) {
   deleteTodoItem(oldObject);
   setTodoItem(newObject);
 }
 
-function deleteProject(project) {
+function deleteProject(selectedProjectTitle) {
   const projectForRemoval = todoItemsList.filter(
     (item) =>
-      `${item.category.toLowerCase()}:${item.project.toLowerCase()}` === project.dataset.project
+      `${item.category.toLowerCase()}:${item.project.toLowerCase()}` === selectedProjectTitle.dataset.project
   );
   for (const item of projectForRemoval) {
     deleteTodoItem(item);
   }
-  updateCategories();
+  // updateCategories();
+  // updateProjectItemsDisplay(selectedProjectTitle.dataset.project);
 }
 
 // TODO: at the end of displayDetails function, add behavior: old should store

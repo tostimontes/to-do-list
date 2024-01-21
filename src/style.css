@@ -176,7 +176,7 @@ body {
 .custom_categories {
   display: inline-flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.8rem;
 }
 
 .custom_category_titles {
@@ -192,7 +192,7 @@ body {
   padding-right: 2rem;
 }
 
-.project_removal_buttons {
+.project_removal_buttons, .item_removal_buttons {
   cursor: pointer;
   display: none;
   background-color: transparent;

@@ -1,7 +1,11 @@
 import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
-import { todoItemsList, deleteProject } from "./defaultSetup.js";
+import {
+  todoItemsList,
+  deleteProject,
+  deleteTodoItem,
+} from "./defaultSetup.js";
 import allImages from "./image_bundler.js";
-import {convertStringToDateAndTime} from "./dateConverter.js";
+import { convertStringToDateAndTime } from "./dateConverter.js";
 
 const sidebar = document.querySelector("#sidebar");
 const header = document.querySelector("#header");
@@ -11,9 +15,6 @@ const element = document.querySelector("selector");
 const categoriesPanel = document.querySelector("#categories_panel");
 const projectDisplay = document.querySelector("#project_display");
 
-// JUST TAKE ALL TODO ITEMS AND CREATE CATEGORIES FOR ALL ITS CLASSES EACH TIMES AND SORT
-// this only generates the UI cards, another function should take care of the display none/block
-// this creates the main list, when clicked on a project's item, in the edit panel the full thing is cde created and displayed
 function updateCategories() {
   const categoriesPanel = document.querySelector("#categories_panel");
 
@@ -44,22 +45,28 @@ function updateCategories() {
       );
       sidebarProjectTitle.dataset.project = `${item.category.toLowerCase()}:${item.project.toLowerCase()}`;
       sidebarProjectTitle.addEventListener("click", (e) => {
-        updateProjectItemsDisplay(e.target);
+        updateProjectItemsDisplay(e.target.dataset.project);
       });
-      const removalButton = createDOMElement("button", {class: "project_removal_buttons"}, "x");
+      const removalButton = createDOMElement(
+        "button",
+        { class: "project_removal_buttons" },
+        "x"
+      );
       removalButton.addEventListener("click", (e) => {
         deleteProject(e.target.previousElementSibling);
-      })
-      
-      const sidebarProjectDiv = createDOMElement("div", {class: "sidebar_project_div"});
+      });
+
+      const sidebarProjectDiv = createDOMElement("div", {
+        class: "sidebar_project_div",
+      });
       sidebarProjectDiv.append(sidebarProjectTitle, removalButton);
 
       sidebarProjectDiv.addEventListener("mouseenter", (e) => {
         e.target.querySelector("button").style.display = "inline-block";
-      })
+      });
       sidebarProjectDiv.addEventListener("mouseleave", (e) => {
         e.target.querySelector("button").style.display = "none";
-      })
+      });
 
       if (
         !categoriesPanel.querySelector(
@@ -85,7 +92,7 @@ function updateCategories() {
   }
 }
 
-function updateProjectItemsDisplay(project) {
+function updateProjectItemsDisplay(selectedProjectTitle) {
   const projectDisplay = document.querySelector("#project_display");
   projectDisplay.innerHTML = "";
   const detailedDisplay = document.querySelector("#detail_display");
@@ -94,7 +101,7 @@ function updateProjectItemsDisplay(project) {
   const projectItems = todoItemsList.filter(
     (item) =>
       `${item.category.toLowerCase()}:${item.project.toLowerCase()}` ===
-      `${project.dataset.project}`
+      `${selectedProjectTitle.toLowerCase()}`
   );
 
   for (const item of projectItems) {
@@ -150,8 +157,24 @@ function updateProjectItemsDisplay(project) {
     itemTitle.addEventListener("click", (e) => {
       displayDetails(e.target);
     });
+    const itemRemovalButton = createDOMElement(
+      "button",
+      { class: "item_removal_buttons" },
+      "x"
+    );
+    itemRemovalButton.addEventListener("click", (e) => {
+      const itemForRemoval = todoItemsList.find(item => `${item.category.toLowerCase()}:${item.project.toLowerCase()}` === e.target.parentElement.dataset.project); 
+      deleteTodoItem(itemForRemoval);
+    });
 
-    itemDiv.append(itemTitle);
+    itemDiv.append(itemTitle, itemRemovalButton);
+
+    itemDiv.addEventListener("mouseenter", (e) => {
+      e.target.querySelector("button").style.display = "inline-block";
+    });
+    itemDiv.addEventListener("mouseleave", (e) => {
+      e.target.querySelector("button").style.display = "none";
+    });
 
     projectDisplay.appendChild(itemDiv);
 
