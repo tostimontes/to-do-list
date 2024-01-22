@@ -1,4 +1,3 @@
-import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
 import "./style.css";
 import { updateProjectItemsDisplay } from "./updateUI.js";
 import {
@@ -6,6 +5,7 @@ import {
   createTodoObject,
   deleteTodoItem,
   generateTestItems,
+  createDOMElement
 } from "./appLogicFunctions.js";
 import "@fortawesome/fontawesome-free/css/all.css";
 

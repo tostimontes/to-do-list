@@ -453,6 +453,19 @@ function generateTestItems() {
   }
 }
 
+function createDOMElement(type, attributes, text) {
+  const element = document.createElement(`${type}`);
+
+  for (const property in attributes) {
+    element.setAttribute(property, attributes[property]);
+  }
+
+  element.textContent = text;
+
+  return element;
+}
+
+
 export {
   setTodoItem,
   getTodoItems,
@@ -462,4 +475,5 @@ export {
   deleteProject,
   capitalizeFirstLetter,
   generateTestItems,
+  createDOMElement
 };

@@ -1,9 +1,9 @@
-import createDOMElement from "C:/Users/Aitor/Google Drive/Kode/projects/reusables/JavaScript/DOMElementCreator.js";
 import {
   todoItemsList,
   deleteProject,
   deleteTodoItem,
   capitalizeFirstLetter,
+  createDOMElement
 } from "./appLogicFunctions.js";
 import allImages from "./image_bundler.js";
 import {
