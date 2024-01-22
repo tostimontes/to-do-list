@@ -55,22 +55,27 @@ function updateCategories() {
       );
       removalButton.addEventListener("click", (e) => {
         const header = document.querySelector("#header");
-        const currentHeader = `${header
-          .querySelector(".category_breadcrumb")
-          .textContent.toLowerCase()}:${header
-          .querySelector(".project_breadcrumb")
-          .textContent.toLowerCase()}`;
+        let currentHeader;
+        if (header.innerHTML !== "") {
+          currentHeader = `${header
+            .querySelector(".category_breadcrumb")
+            .textContent.toLowerCase()}:${header
+            .querySelector(".project_breadcrumb")
+            .textContent.toLowerCase()}`;
+        }
         const removalCategoryAndProject =
           e.target.previousElementSibling.dataset.project;
         deleteProject(e.target.previousElementSibling);
-        if (
-          currentHeader === removalCategoryAndProject
-        ) {
+        if (currentHeader === removalCategoryAndProject) {
+          header.innerHTML = "";
+          document.querySelector("#project_display").innerHTML = "";
+          document.querySelector("#completed_items_display").innerHTML = "";
+        } else if (currentHeader === undefined) {
           header.innerHTML = "";
           document.querySelector("#project_display").innerHTML = "";
           document.querySelector("#completed_items_display").innerHTML = "";
         } else {
-          updateProjectItemsDisplay(currentHeader)
+          updateProjectItemsDisplay(currentHeader);
         }
       });
 
@@ -159,12 +164,22 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
       );
       if (itemToComplete.status === "pending") {
         itemToComplete.status = "completed";
-        localStorage.removeItem(`${itemToComplete.project}: ${itemToComplete.title}`);
-        localStorage.setItem(`${itemToComplete.project}: ${itemToComplete.title}`, JSON.stringify(itemToComplete))
+        localStorage.removeItem(
+          `${itemToComplete.project}: ${itemToComplete.title}`
+        );
+        localStorage.setItem(
+          `${itemToComplete.project}: ${itemToComplete.title}`,
+          JSON.stringify(itemToComplete)
+        );
       } else {
         itemToComplete.status = "pending";
-        localStorage.removeItem(`${itemToComplete.project}: ${itemToComplete.title}`);
-        localStorage.setItem(`${itemToComplete.project}: ${itemToComplete.title}`, JSON.stringify(itemToComplete))
+        localStorage.removeItem(
+          `${itemToComplete.project}: ${itemToComplete.title}`
+        );
+        localStorage.setItem(
+          `${itemToComplete.project}: ${itemToComplete.title}`,
+          JSON.stringify(itemToComplete)
+        );
       }
       updateProjectItemsDisplay(
         `${itemToComplete.category.toLowerCase()}:${itemToComplete.project.toLowerCase()}`
