@@ -159,8 +159,12 @@ function updateProjectItemsDisplay(selectedProjectTitle) {
       );
       if (itemToComplete.status === "pending") {
         itemToComplete.status = "completed";
+        localStorage.removeItem(`${itemToComplete.project}: ${itemToComplete.title}`);
+        localStorage.setItem(`${itemToComplete.project}: ${itemToComplete.title}`, JSON.stringify(itemToComplete))
       } else {
         itemToComplete.status = "pending";
+        localStorage.removeItem(`${itemToComplete.project}: ${itemToComplete.title}`);
+        localStorage.setItem(`${itemToComplete.project}: ${itemToComplete.title}`, JSON.stringify(itemToComplete))
       }
       updateProjectItemsDisplay(
         `${itemToComplete.category.toLowerCase()}:${itemToComplete.project.toLowerCase()}`

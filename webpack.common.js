@@ -7,7 +7,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Production",
+      title: "To-Do List",
     }),
   ],
   output: {
