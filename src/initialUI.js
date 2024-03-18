@@ -215,7 +215,6 @@ function createDialog(editMode) {
 
   categoryDropdown.addEventListener("change", (e) => {
     if (e.target.value.toLowerCase() === "add new category") {
-      0;
       let newCategory = prompt("Enter new category:");
       if ((newCategory !== null && newCategory) || "") {
         const newCategoryOption = createDOMElement(
